@@ -87,8 +87,8 @@ server.on('upgrade', function (request, socket, head) {
 //
 // Handle the upgrade to WebSocket connection event
 //
-wss.on('connection', function (ws, request) {
-  const userId = request.session.userId;
+wss.on('connection', function (ws, req) {
+  const userId = req.session.userId;
 
   if (req.session.userType == 'player') {
     mapPlayer.set(userId, ws);
