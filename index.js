@@ -8,7 +8,8 @@ const uuid = require('uuid');
 const WebSocket = require('ws');
 
 const app = express();
-const map = new Map();
+const mapPlayer = new Map();
+const mapObserver = new Map();
 
 //
 // Serve static files from the 'public' folder.
@@ -32,9 +33,14 @@ app.post('/login', function (req, res) {
   // "Log in" user and set userId to session.
   //
   if (!req.session.userId) {
+    if(!req.query.type | !(req.query.type == 'player' | req.query.type == 'observer')) {
+      return;
+    }
     const id = uuid.v4();
+    var playerType = req.query.type;
     req.session.userId = id;
-    console.log(`Updating session for user ${id}`);
+    req.session.userType = playerType;
+    console.log(`Updating session for user: ${id}, type: ${playerType}`);
   }
   res.send({ result: 'OK', message: 'Session updated' });
 });
@@ -84,7 +90,13 @@ server.on('upgrade', function (request, socket, head) {
 wss.on('connection', function (ws, request) {
   const userId = request.session.userId;
 
-  map.set(userId, ws);
+  if (req.session.userType == 'player') {
+    mapPlayer.set(userId, ws);
+  } else if (req.session.userType == 'observer') {
+    mapObserver.set(userId, ws);
+  } else {
+    ws.close();
+  }
 
   ws.on('message', function (message) {
     //
@@ -92,18 +104,13 @@ wss.on('connection', function (ws, request) {
     //
     console.log(`Received message ${message} from user ${userId}`);
   
-    let jsonMessage = JSON.parse(message);
-    
-    if(jsonMessage && Object.keys(jsonMessage).includes('dest')) {
-      let p = game.GetPlayers()[userId];
-  
-      p.destX = jsonMessage.dest.x;
-      p.destY = jsonMessage.dest.y;
-    }
+    //let jsonMessage = JSON.parse(message);
   });
 
   ws.on('close', function () {
-    map.delete(userId);
+    console.log(`Closing connection for user ${userId}`);
+    mapPlayer.delete(userId);
+    mapObserver.delete(userId);
   });
 });
 
