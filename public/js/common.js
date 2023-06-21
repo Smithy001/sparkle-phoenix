@@ -7,7 +7,7 @@ function showMessage(message) {
 
 function login(playerType) {
     fetch('/login?type=' + playerType, { method: 'POST', credentials: 'same-origin' })
-      .then(connect, callback)
+      .then(connect)
       .then(showMessage)
       .catch(function (err) {
         showMessage(err.message);
