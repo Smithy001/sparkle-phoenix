@@ -1,0 +1,16 @@
+html,
+body {
+  overflow-x: hidden;
+  height: 100%;
+  margin: 0;
+  overflow: hidden;
+  touch-action: none;
+}
+
+body {
+  position: relative;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}

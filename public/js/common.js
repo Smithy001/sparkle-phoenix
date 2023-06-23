@@ -2,19 +2,18 @@
 let ws;
 
 function showMessage(message) {
-    alert(message);
+    console.log(message);
 }
 
-function login(playerType) {
+function login(playerType, callback) {
     fetch('/login?type=' + playerType, { method: 'POST', credentials: 'same-origin' })
-      .then(connect)
-      .then(showMessage)
+      .then(connect.bind(callback))
       .catch(function (err) {
         showMessage(err.message);
       });
 }
 
-function connect() {
+function connect(callback) {
     if (ws) {
       ws.onerror = ws.onopen = ws.onclose = null;
       ws.close();
@@ -31,4 +30,8 @@ function connect() {
       showMessage('WebSocket connection closed');
       ws = null;
     };
+    ws.onmessage = function(event) {
+        callback(event);
+    }
+    callback("ready");
 }

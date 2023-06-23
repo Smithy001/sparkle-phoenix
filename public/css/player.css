@@ -1,0 +1,55 @@
+button {
+    width: 3em;
+    height: 3em;
+    background-position: center;
+}
+
+.selected {
+    border-color: blue;
+    border-radius: 2em;
+}
+
+.no-select {
+    background-color: white;
+    border-color: white;
+}
+
+.dir0 {
+    background: url('../img/button_dir_0.png');
+    background-size: contain;
+}
+
+.dir1 {
+    background: url('../img/button_dir_1.png');
+    background-size: contain;
+}
+
+.dir2 {
+    background: url('../img/button_dir_2.png');
+    background-size: contain;
+}
+
+.dir3 {
+    background: url('../img/button_dir_3.png');
+    background-size: contain;
+}
+
+.dir4 {
+    background: url('../img/button_dir_4.png');
+    background-size: contain;
+}
+
+.dir5 {
+    background: url('../img/button_dir_5.png');
+    background-size: contain;
+}
+
+.dir6 {
+    background: url('../img/button_dir_6.png');
+    background-size: contain;
+}
+
+.dir7 {
+    background: url('../img/button_dir_7.png');
+    background-size: contain;
+}
