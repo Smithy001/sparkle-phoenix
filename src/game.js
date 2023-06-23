@@ -1,8 +1,9 @@
 // gameBoard.js
 
 class GameBoard {
-    constructor() {
+    constructor(test) {
       this.board = this.createBoard();
+      console.log("constructor param: " + test);
     }
   
     newGame() {

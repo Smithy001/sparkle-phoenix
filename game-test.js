@@ -13,7 +13,7 @@ Direction = value * 45
 7 => 315
 */
 
-var game = new Game();
+var game = new Game("test");
 
 game.newGame(3);
 
