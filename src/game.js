@@ -5,6 +5,10 @@ class GameBoard {
       this.board = this.createBoard();
     }
   
+    newGame() {
+        console.log('Starting a new game');
+    }
+
     createBoard() {
       const board = [];
       for (let row = 0; row < 10; row++) {
