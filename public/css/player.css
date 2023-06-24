@@ -1,55 +1,131 @@
+html,
+body {
+    overflow-x: hidden;
+    height: 100%;
+    margin: 0;
+    overflow: hidden;
+    touch-action: none;
+}
+
+body {
+    position: relative;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
 button {
-    width: 3em;
-    height: 3em;
-    background-position: center;
+    width: 6em;
+    height: 6em;
+    margin: 1em;
+    border-color: white;
+}
+
+.button-container {
+    display: flex;
+}
+
+.button-set {
+    flex: 1;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.button-row {
+    width: 100%;
+    display: flex;
 }
 
 .selected {
-    border-color: blue;
-    border-radius: 2em;
+    border-radius: 3em;
+    border-color: black;
 }
 
 .no-select {
     background-color: white;
     border-color: white;
+    border-style: solid;
 }
 
-.dir0 {
-    background: url('../img/button_dir_0.png');
+/* Bullet buttons */
+.bullet.dir-0 {
+    background: url('../img/bullet_dir_0.png');
     background-size: contain;
 }
 
-.dir1 {
-    background: url('../img/button_dir_1.png');
+.bullet.dir-1 {
+    background: url('../img/bullet_dir_1.png');
     background-size: contain;
 }
 
-.dir2 {
-    background: url('../img/button_dir_2.png');
+.bullet.dir-2 {
+    background: url('../img/bullet_dir_2.png');
     background-size: contain;
 }
 
-.dir3 {
-    background: url('../img/button_dir_3.png');
+.bullet.dir-3 {
+    background: url('../img/bullet_dir_3.png');
     background-size: contain;
 }
 
-.dir4 {
-    background: url('../img/button_dir_4.png');
+.bullet.dir-4 {
+    background: url('../img/bullet_dir_4.png');
     background-size: contain;
 }
 
-.dir5 {
-    background: url('../img/button_dir_5.png');
+.bullet.dir-5 {
+    background: url('../img/bullet_dir_5.png');
     background-size: contain;
 }
 
-.dir6 {
-    background: url('../img/button_dir_6.png');
+.bullet.dir-6 {
+    background: url('../img/bullet_dir_6.png');
     background-size: contain;
 }
 
-.dir7 {
-    background: url('../img/button_dir_7.png');
+.bullet.dir-7 {
+    background: url('../img/bullet_dir_7.png');
+    background-size: contain;
+}
+
+/* Spaceship buttons */
+.spaceship.dir-0 {
+    background: url('../img/spaceship_dir_0.png');
+    background-size: contain;
+}
+
+.spaceship.dir-1 {
+    background: url('../img/spaceship_dir_1.png');
+    background-size: contain;
+}
+
+.spaceship.dir-2 {
+    background: url('../img/spaceship_dir_2.png');
+    background-size: contain;
+}
+
+.spaceship.dir-3 {
+    background: url('../img/spaceship_dir_3.png');
+    background-size: contain;
+}
+
+.spaceship.dir-4 {
+    background: url('../img/spaceship_dir_4.png');
+    background-size: contain;
+}
+
+.spaceship.dir-5 {
+    background: url('../img/spaceship_dir_5.png');
+    background-size: contain;
+}
+
+.spaceship.dir-6 {
+    background: url('../img/spaceship_dir_6.png');
+    background-size: contain;
+}
+
+.spaceship.dir-7 {
+    background: url('../img/spaceship_dir_7.png');
     background-size: contain;
 }

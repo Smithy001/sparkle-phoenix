@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    canvas {
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="gridCanvas"></canvas>
+
+  <script>
+    const canvas = document.getElementById("gridCanvas");
+    const ctx = canvas.getContext("2d");
+    const image = new Image();
+    image.src = "../img/spaceship.png";
+
+    function drawGrid() {
+      const cellSize = Math.min(canvas.width, canvas.height) / 10;
+      const gridWidth = cellSize * 10;
+      const gridHeight = cellSize * 10;
+      const xOffset = (canvas.width - gridWidth) / 2;
+      const yOffset = (canvas.height - gridHeight) / 2;
+      
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      
+      for (let row = 0; row < 10; row++) {
+        for (let col = 0; col < 10; col++) {
+          const x = xOffset + col * cellSize;
+          const y = yOffset + row * cellSize;
+          ctx.drawImage(image, x, y, cellSize, cellSize);
+        }
+      }
+    }
+
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      drawGrid();
+    }
+
+    window.addEventListener("resize", resizeCanvas);
+    resizeCanvas();
+  </script>
+</body>
+</html>
