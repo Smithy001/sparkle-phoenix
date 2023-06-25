@@ -1,7 +1,9 @@
 var moveDir;
 var fireDir;
 
-login('player');
+login('player', function(message) {
+    console.log(message);
+});
 
 $(document).ready(function(){
     $('button').on( "click", function() {

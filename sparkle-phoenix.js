@@ -4,6 +4,7 @@ const HttpServer = require('./src/httpServer');
 const WSManager = require('./src/wsManager');
 
 var wsManager = new WSManager();
+
 var httpServer = new HttpServer(8080, wsManager);
 
 httpServer.startServer();

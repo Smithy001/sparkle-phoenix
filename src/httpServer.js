@@ -2,10 +2,19 @@ const session = require('express-session');
 const express = require('express');
 const http = require('http');
 const uuid = require('uuid');
+var wsManager;
+// We need the same instance of the session parser in express and
+// WebSocket server.
+sessionParser = session({
+    saveUninitialized: false,
+    secret: 'pdjhdsofndsub7ubnsijuh32u8sabdsjadjk3hk3hadksahkuai3hkuakhsbcbjmxz',
+    resave: false
+});
 
 class HttpServer {
-    constructor(port, wsManager) {
-        this.wsManager = wsManager;
+    constructor(port, wsm) {
+        wsManager = wsm;
+
         this.port = port;
         this.express = express();
         this.configServer();
@@ -15,15 +24,7 @@ class HttpServer {
         // Serve static files from the 'public' folder.
         this.express.use(express.static('public'));
 
-        // We need the same instance of the session parser in express and
-        // WebSocket server.
-        this.sessionParser = session({
-            saveUninitialized: false,
-            secret: 'pdjhdsofndsub7ubnsijuh32u8sabdsjadjk3hk3hadksahkuai3hkuakhsbcbjmxz',
-            resave: false
-        });
-
-        this.express.use(this.sessionParser);
+        this.express.use(sessionParser);
 
         //
         // Create an HTTP server.
@@ -47,7 +48,7 @@ class HttpServer {
       
           console.log('Session is parsed!');
           
-          this.wsManager.handleUpgrade(request, socket, head);
+          wsManager.handleUpgrade(request, socket, head);
           
         });
     }
