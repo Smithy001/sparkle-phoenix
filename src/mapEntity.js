@@ -1,13 +1,16 @@
 // mapEntity.js
 
 class MapEntity {
-    constructor(options = {}) {
-        this.x = options.x;
-        this.y = options.y;
-        this.type = options.type;
-        this.direction = options.direction;
+    constructor(x, y, type, direction, owner, color) {
+        this.x = x;
+        this.y = y;
+        this.type = type;
+        this.moveDirection = direction;
+        this.shootDirection = -1;
         this.hasMoved = false;
-        this.owner = options.owner;
+        this.owner = owner;
+        this.color = color;
+        this.needsToExplode = false;
     }
 }
 

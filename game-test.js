@@ -13,7 +13,9 @@ Direction = value * 45
 7 => 315
 */
 
-var game = new Game("test");
+var game = new Game(function(id, state) {
+    console.log('Callback = Id: ${id}, State: ${state}');
+});
 
 game.newGame(3);
 
