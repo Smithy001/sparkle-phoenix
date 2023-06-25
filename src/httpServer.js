@@ -4,10 +4,11 @@ const http = require('http');
 const uuid = require('uuid');
 
 class HttpServer {
-    constructor(port) {
+    constructor(port, wsManager) {
+        this.wsManager = wsManager;
         this.port = port;
         this.express = express();
-        configServer();
+        this.configServer();
     }
 
     configServer() {
@@ -30,14 +31,34 @@ class HttpServer {
         this.server = http.createServer(this.express);
 
         this.express.post('/login', this.handleLogin);
+
+        this.server.on('upgrade', this.handleUpgrade);
+    }
+
+    handleUpgrade(request, socket, head) {
+        console.log('Parsing session from request...');
+      
+        sessionParser(request, {}, () => {
+          if (!request.session.userId) {
+            socket.write('HTTP/1.1 401 Unauthorized\r\n\r\n');
+            socket.destroy();
+            return;
+          }
+      
+          console.log('Session is parsed!');
+          
+          this.wsManager.handleUpgrade(request, socket, head);
+          
+        });
     }
 
     handleLogin(req, res) {
         //
-        // "Log in" user and set userId to session.
+        // "Log in" user and set userId and type to session.
         //
         if (!req.session.userId) {
           if(!req.query.type | !(req.query.type == 'player' | req.query.type == 'observer')) {
+            res.send({ result: 'FAILED', message: 'query parameter type is required' });
             return;
           }
           const id = uuid.v4();
