@@ -1,49 +1,21 @@
 'use strict';
 
-const session = require('express-session');
-const express = require('express');
-const http = require('http');
-const uuid = require('uuid');
+const HttpServer = require('./src/httpServer');
+
+httpServer = new HttpServer(8080);
+
 
 const WebSocket = require('ws');
 
-const app = express();
+
 const mapPlayer = new Map();
 const mapObserver = new Map();
 
-//
-// Serve static files from the 'public' folder.
-//
-app.use(express.static('public'));
+httpServer.startServer();
 
-//
-// We need the same instance of the session parser in express and
-// WebSocket server.
-//
-const sessionParser = session({
-  saveUninitialized: false,
-  secret: 'pdjhdsofndsub7ubnsijuh32u8sabdsjadjk3hk3hadksahkuai3hkuakhsbcbjmxz',
-  resave: false
-});
 
-app.use(sessionParser);
 
-app.post('/login', function (req, res) {
-  //
-  // "Log in" user and set userId to session.
-  //
-  if (!req.session.userId) {
-    if(!req.query.type | !(req.query.type == 'player' | req.query.type == 'observer')) {
-      return;
-    }
-    const id = uuid.v4();
-    var playerType = req.query.type;
-    req.session.userId = id;
-    req.session.userType = playerType;
-    console.log(`Updating session for user: ${id}, type: ${playerType}`);
-  }
-  res.send({ result: 'OK', message: 'Session updated' });
-});
+/*
 
 app.delete('/logout', function (request, response) {
   const ws = map.get(request.session.userId);
@@ -56,10 +28,7 @@ app.delete('/logout', function (request, response) {
   });
 });
 
-//
-// Create an HTTP server.
-//
-const server = http.createServer(app);
+
 
 //
 // Create a WebSocket server completely detached from the HTTP server.
@@ -114,9 +83,4 @@ wss.on('connection', function (ws, req) {
   });
 });
 
-//
-// Start the server.
-//
-server.listen(8080, function () {
-    console.log('Listening on http://localhost:8080');
-  });
+*/
