@@ -6,7 +6,7 @@ class Game {
     this.boardSize = 0;
     this.board = null;
     this.players = [];
-    this.entites = [];
+    this.entities = [];
     this.pushStateCallback = pushStateCallbackParameter;
   }
 
@@ -30,19 +30,19 @@ class Game {
     for (let x = 0; x < this.boardSize; x++) {
       const cellArray = [];
       for (let y = 0; y < this.boardSize; y++) {
-        oneArray.push({ entities: [], shrapnelHasBeenAdded: false });
+        cellArray.push({ entities: [], shrapnelHasBeenAdded: false });
       }
       board.push(cellArray);
     }
 
     return board;
   }
-
+/*
   X X X
 1 2 B X
 4 O 6 X
 7 8 9
-
+*/
   playerJoin(playerId) {
     if (!this.gameStarted) 
     {
@@ -64,7 +64,7 @@ class Game {
       player.color = determineColor(i);
       player.ship = new MapEntity({x:x, y:y, type: 'ship', direction:direction, owner: player})
   
-      this.board[x][y].entites.push(player.ship);
+      this.board[x][y].entities.push(player.ship);
     }
 
     pushCurrentState();
@@ -115,7 +115,7 @@ class Game {
     const randomValue = getRandomValue(x, y);
     const value = 100 + valueFromDistanceFromCenter + valueFromPlayerDistances + randomValue;
 
-    if (this.board[x][y].entites.length > 0) {
+    if (this.board[x][y].entities.length > 0) {
       return -1000;
     }
     else {
@@ -123,7 +123,6 @@ class Game {
     }
   }
 
-  //'abc', 0, 0
   endTurn(id, moveDirection, shootDirection) {
     const player = findPlayer(id);
     const ship = player.ship;
@@ -139,10 +138,173 @@ class Game {
     }
   }
 
+  findPlayer(id) {
+    for (let i = 0; i < this.players.length; i++) {
+      const player = this.players[i];
+      if (player.id == id) {
+        return player;
+      }
+    }
+
+    return null;
+  }
+
   runNextTurn() {
-    //TODO: Calculate the turn
+    //Move everything and ships fire missiles
+    everythingMovesAndShoots();
+
+    //Decide on explosions and/or add shrapnels
+    determineWhatExplodesAndAddShrapnel();
 
     pushCurrentState();
+  }
+
+  everythingMovesAndShoots() {
+    for (let i = 0; i < this.entities.length; i++) {
+      const entity = this.entities[i];
+      const newLocation = getNewLocationFromDirection(entity, entity.moveDirection);
+      const newLocationIsOnTheMap = determineNewLocationIsOnTheMap(newLocation);
+
+      if (newLocationIsOnTheMap) {
+        moveOneEntity(entity.x, entity.y, newLocation);
+      }
+      else {
+        entity.needsToExplode = true;
+      }
+
+      if (entity.type == 'ship') {
+        shootMissle(entity);
+      }
+    }
+  }
+
+  getNewLocationFromDirection(x, y, direction) {
+    const newLocation = { x: x, y: y };
+
+    switch (direction) {
+      case 0:
+        newLocation.y -= 1; 
+        break;
+      case 1:
+        newLocation.y -= 1;
+        newLocation.x += 1;
+        break;
+      case 2:
+        newLocation.x += 1;
+        break;
+      case 3:
+        newLocation.x += 1;
+        newLocation.y += 1;
+        break;
+      case 4:
+        newLocation.y += 1;
+        break;
+      case 5:
+        newLocation.x -= 1;
+        newLocation.y += 1;
+        break;
+      case 6:
+        newLocation.x -= 1;
+        break;
+      case 7:
+        newLocation.x -= 1;
+        newLocation.y -= 1;
+        break;
+    }
+
+    return newLocation;
+  }
+
+  moveOneEntity (entity, newLocation) {
+    const cell = this.board[entity.x][entity.y];
+    const index = cell.indexOf(entity);
+
+    if (index > -1) {
+      cell.entities.splice(index, 1);
+    }
+
+    entity.x = newLocation.x;
+    entity.y = newLocation.y;
+
+    this.board[entity.x][entity.y].entities.push(entity);
+  }
+
+  shootMissile(entity) {
+    const locationOfMissile = this.getNewLocationFromDirection(entity.x, entity.y, entity.shootDirection);
+    const missile = new MapEntity({x:locationOfMissile.x, y:locationOfMissile.y, type: 'missile', direction:entity.shootDirection})
+    
+    this.board[entity.x][entity.y].entities.push(missile);
+  }
+
+  //shrapnelHasBeenAdded
+  determineWhatExplodesAndAddShrapnel() {
+    const needsShrapnel = [];
+
+    for (let x = 0; x < this.boardSize; x++) {
+      for (let y = 0; y < this.boardSize; y++) {
+        const cell = this.board[x][y];
+        var cellExplodes = false;
+        
+        if (cell.entities.length > 1) {
+          cellExplodes = true;
+        }
+
+        if (!cellExplodes) {
+          for (let i = 0; i < cell.entities.length; i++) {
+            const entity = cell.entities[i];
+  
+            if (entity.needsToExplode) {
+              cellExplodes = true;
+            }
+          }
+        }
+
+        if (cellExplodes) {
+          this.addShrapnelForExplosion(x, y, needsShrapnel);
+        }
+      }
+    }
+
+    for (let i = 0; i < needsShrapnel.length; i++) {
+      //everything in each of these cells goes away and instead a single missle is placed
+      const shrapnelCell = needsShrapnel[i];
+      const explodingCell = this.board[shrapnelCell.x][shrapnelCell.y];
+      killEverythingInCell(explodingCell);
+
+      const shrapnel = new MapEntity(shrapnelCell.x, shrapnelCell.y, 'shrapnel', shrapnelCell.direction);
+      explodingCell.entities.push(shrapnel);
+    }
+  }
+
+  killEverythingInCell(explodingCell) {
+    for (let i = 0; i < explodingCell.entities.length; i++) {
+      const entity = explodingCell.entities[i];
+
+      if (entity.type == 'ship') {
+        entity.owner.alive = false;
+      }
+    }
+
+     explodingCell.entities = [];
+  }
+
+  addShrapnelForExplosion(x, y, needsShrapnel) {
+    for (let direction = 0; direction <= 7; direction++) {
+      const newLocation = getNewLocationFromDirection(x, y, direction);
+      
+      if (validXY(otherX, otherY)) {
+        needsShrapnel.push( { x: newLocation.x, y: newLocation.y, direction: direction});
+      }
+    }
+  }
+
+  validXY(x, y) {
+    if (x > this.boardSize || x < 0 || y > this.boardSize || y < 0) {
+      return false;
+    }
+    else {
+      return true;
+    }
   }
 
   push() {
@@ -165,7 +327,7 @@ class Game {
   }
 
   getStateForOnePlayer(player) {
-    const state = { alive:true, color:'blue' };
+    const state = { alive:player.alive, color:player.color };
 
     return state;
   }
@@ -183,9 +345,9 @@ class Game {
       state.players.push({ id: player.id, color: player.color });
     }
 
-    for (let i = 0; i < this.entites.length; i++) {
-      const entity = this.entites[i];
-      state.items.push({ id: entity.id, col: entity.x, row: entity.y, dir: entity.direction });
+    for (let i = 0; i < this.entities.length; i++) {
+      const entity = this.entities[i];
+      state.items.push({ id: entity.id, col: entity.x, row: entity.y, dir: entity.moveDirection });
     }
           /*"width": 20,
           "height": 20,
