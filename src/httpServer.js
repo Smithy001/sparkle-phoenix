@@ -3,8 +3,7 @@ const express = require('express');
 const http = require('http');
 const uuid = require('uuid');
 var wsManager;
-// We need the same instance of the session parser in express and
-// WebSocket server.
+
 sessionParser = session({
     saveUninitialized: false,
     secret: 'pdjhdsofndsub7ubnsijuh32u8sabdsjadjk3hk3hadksahkuai3hkuakhsbcbjmxz',

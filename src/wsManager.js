@@ -20,10 +20,6 @@ class WSManager {
         });
     }
 
-    testMethod() {
-        console.log('calling test method');
-    }
-
     handleConnection(ws, req) {
         const userId = req.session.userId;
       
@@ -32,22 +28,28 @@ class WSManager {
         } else if (req.session.userType == 'observer') {
           observers.set(userId, ws);
         } else {
+            console.log("Closing connection");
           ws.close();
         }
       
-        ws.on('message', handleMessage);
+        ws.on('message', function(message) {
+            console.log(`Received message ${message} from user ${userId}`);
+            //let jsonMessage = JSON.parse(message);
+        });
       
-        ws.on('close', function () {
+        ws.on('close', function (event) {
           console.log(`Closing connection for user ${userId}`);
+          console.log('Reason: ' + event);
+          console.log('Reason code: ' + event.code);
           players.delete(userId);
           observers.delete(userId);
         });
-    }
-}
 
-function handleMessage(message) {
-    console.log(`Received message ${message} from user ${userId}`);
-    //let jsonMessage = JSON.parse(message);
+        // On Error
+        ws.on('error', function(e) {
+            console.log("error occured" +e);
+        });
+    }
 }
 
 module.exports = WSManager;

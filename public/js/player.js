@@ -2,7 +2,7 @@ var moveDir;
 var fireDir;
 
 login('player', function(message) {
-    console.log(message);
+    console.log("Got a message: " + message);
 });
 
 $(document).ready(function(){
