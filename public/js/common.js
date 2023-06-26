@@ -7,7 +7,7 @@ function showMessage(message) {
 
 function login(playerType, callback) {
     fetch('/login?type=' + playerType, { method: 'POST', credentials: 'same-origin' })
-      .then(connect.bind(callback))
+      .then(connect.bind(null, callback))
       .catch(function (err) {
         showMessage(err.message);
       });
@@ -42,6 +42,10 @@ function createPlayerImage(image, color) {
     return playerImage;
 }
 
+function sendMessage(message) {
+  ws.send(message);
+}
+
 function imageToCanvas(image){
     const c = document.createElement("canvas");
     c.width = image.width;
@@ -63,6 +67,9 @@ function colorImage(image,color, maskImage) {
     return image;
 }
 
+window.onbeforeunload = function (e) {
+  ws.close();
+};
 
 var testStatusUpdate = `
 {
