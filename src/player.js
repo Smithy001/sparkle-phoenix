@@ -4,6 +4,7 @@ class Player {
       this.ship = null;
       this.color = "";
       this.alive = true;
+      this.turnHasBeenSubmitted = false;
     }
   }
   
