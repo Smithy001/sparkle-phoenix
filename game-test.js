@@ -14,31 +14,32 @@ Direction = value * 45
 */
 
 var game = new Game(function(id, state) {
-    console.log('Callback = Id: ${id}, State: ${state}');
+    console.log(`Callback = ID: ${id}`);
+    console.log(state);
 });
 
 game.newGame(3);
 
-game.playerJoin('abc')
-game.playerJoin('cbd')
-game.playerJoin('edg')
+game.playerJoin('abc');
+game.playerJoin('cbd');
+game.playerJoin('edg');
 
-game.endTurn('abc', 0, 0)
-game.endTurn('cbd', 5, 7)
-game.endTurn('edg', 1, 4)
+game.endTurn('abc', 0, 0);
+game.endTurn('cbd', 5, 7);
+game.endTurn('edg', 1, 4);
 
-game.endTurn('abc', 0, 0)
-game.endTurn('cbd', 5, 7)
-game.endTurn('edg', 1, 4)
+game.endTurn('abc', 0, 0);
+game.endTurn('cbd', 5, 7);
+game.endTurn('edg', 1, 4);
 
-game.endTurn('abc', 0, 0)
-game.endTurn('cbd', 5, 7)
-game.endTurn('edg', 1, 4)
+game.endTurn('abc', 0, 0);
+game.endTurn('cbd', 5, 7);
+game.endTurn('edg', 1, 4);
 
 // Player abc dies
 
-game.endTurn('cbd', 5, 7)
-game.endTurn('edg', 1, 4)
+game.endTurn('cbd', 5, 7);
+game.endTurn('edg', 1, 4);
 
 // Player cbd dies
 
