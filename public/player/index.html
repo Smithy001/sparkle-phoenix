@@ -6,40 +6,45 @@
         <link href="../css/player.css" rel="stylesheet" type="text/css" />
     </header>
     <body>
-        <h1>YOU ARE A PLAYER!</h1><br>
-        <div class="button-container">
-            <div class="button-set">
-                <div class="button-row">
-                    <button class="spaceship dir-7" data-direction="7"></button>
-                    <button class="spaceship dir-0" data-direction="0"></button>
-                    <button class="spaceship dir-1" data-direction="1"></button>
+        <h1>You are <span id="playerColorTitle">a</span> player!</h1><br>
+        <div id="pregame-info" class="game-info">Waiting for game to start...</div>
+        <div id="turn-end-info" class="game-info">Waiting for other players...</div>
+        <div class="game">
+            <button id="end-turn-button" disabled>End Turn</button>
+            <div class="button-container">
+                <div class="button-set">
+                    <div class="button-row">
+                        <button class="spaceship dir-7" data-direction="7"></button>
+                        <button class="spaceship dir-0" data-direction="0"></button>
+                        <button class="spaceship dir-1" data-direction="1"></button>
+                    </div>
+                    <div class="button-row">
+                        <button class="spaceship dir-6" data-direction="6"></button>
+                        <button class="no-select"></button>
+                        <button class="spaceship dir-2" data-direction="2"></button>
+                    </div>
+                    <div class="button-row">
+                        <button class="spaceship dir-5" data-direction="5"></button>
+                        <button class="spaceship dir-4" data-direction="4"></button>
+                        <button class="spaceship dir-3" data-direction="3"></button>
+                    </div>
                 </div>
-                <div class="button-row">
-                    <button class="spaceship dir-6" data-direction="6"></button>
-                    <button class="no-select"></button>
-                    <button class="spaceship dir-2" data-direction="2"></button>
-                </div>
-                <div class="button-row">
-                    <button class="spaceship dir-5" data-direction="5"></button>
-                    <button class="spaceship dir-4" data-direction="4"></button>
-                    <button class="spaceship dir-3" data-direction="3"></button>
-                </div>
-            </div>
-            <div class="button-set">
-                <div class="button-row">
-                    <button class="bullet dir-7" data-direction="7"></button>
-                    <button class="bullet dir-0" data-direction="0"></button>
-                    <button class="bullet dir-1" data-direction="1"></button>
-                </div>
-                <div class="button-row">
-                    <button class="bullet dir-6" data-direction="6"></button>
-                    <button class="no-select"></button>
-                    <button class="bullet dir-2" data-direction="2"></button>
-                </div>
-                <div class="button-row">
-                    <button class="bullet dir-5" data-direction="5"></button>
-                    <button class="bullet dir-4" data-direction="4"></button>
-                    <button class="bullet dir-3" data-direction="3"></button>
+                <div class="button-set">
+                    <div class="button-row">
+                        <button class="bullet dir-7" data-direction="7"></button>
+                        <button class="bullet dir-0" data-direction="0"></button>
+                        <button class="bullet dir-1" data-direction="1"></button>
+                    </div>
+                    <div class="button-row">
+                        <button class="bullet dir-6" data-direction="6"></button>
+                        <button class="no-select"></button>
+                        <button class="bullet dir-2" data-direction="2"></button>
+                    </div>
+                    <div class="button-row">
+                        <button class="bullet dir-5" data-direction="5"></button>
+                        <button class="bullet dir-4" data-direction="4"></button>
+                        <button class="bullet dir-3" data-direction="3"></button>
+                    </div>
                 </div>
             </div>
         </div>

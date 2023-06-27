@@ -15,7 +15,32 @@ body {
     user-select: none;
 }
 
-button {
+.game {
+    display: none;
+}
+
+.game-info {
+    position: fixed;
+    font-size: 2em;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+}
+
+#turn-end-info {
+    display: none;
+}
+
+#end-turn-button {
+    position: fixed;
+    top:0em;
+    right:0em;
+    margin: 1em;
+    width: 9em;
+    height: 3em;
+}
+
+.button-container button {
     width: 6em;
     height: 6em;
     margin: 1em;
@@ -37,7 +62,7 @@ button {
     display: flex;
 }
 
-.selected {
+.button-container .selected {
     border-radius: 3em;
     border-color: black;
 }

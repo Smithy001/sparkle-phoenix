@@ -31,7 +31,7 @@ function connect(callback) {
       ws = null;
     };
     ws.onmessage = function(event) {
-        callback(event);
+        callback(JSON.parse(event));
     }
     callback("ready");
 }
