@@ -11,6 +11,7 @@ class Game {
     this.players = [];
     this.entities = [];
     this.pushStateCallback = pushStateCallbackParameter;
+    this.messages = [];
   }
 
   newGame(expectedPlayers) {
@@ -141,6 +142,8 @@ class Game {
     const randomValue = this.getRandomValue();
     const value = valueFromDistanceFromCenter + valueFromPlayerDistances + randomValue;
 
+    //console.log(`value at ${x},${y} is ${value}; center(${valueFromDistanceFromCenter}), distance(${valueFromPlayerDistances}), random(${randomValue})`);
+
     if (this.board[x][y].entities.length > 0) {
       return -1000;
     }
@@ -151,47 +154,86 @@ class Game {
 
   getRandomValue() {
     const rng = Math.random();
-    const normalizedRng = (rng - 0.5) / 10;
-
-    /*should generate a value between -0.05 and 0.05, 
-    on smaller maps this will just choose between equally valued other positions as there isn't enough room to play with.
-    However, on larger maps this should be enough to alter positions by up to 1 square.
-
-    */
+    const normalizedRng = rng / 2;
 
     return normalizedRng;
   }
-
+/*
   getValueFromPlayerDistances(x, y) {
     var totalPlayerDistancePercentages = 0;
-    const maxPossibleDistance = this.getDistance(0, 0, this.boardSize - 1, this.boardSize - 1);
+    const centerCoordinate = Math.floor(this.boardSize / 2);
+    const maxPossibleDistance = this.getDistance(0, 0, centerCoordinate, centerCoordinate);
+    var proximityEffect = 0;
+    const proximityDistance = Math.floor(centerCoordinate / 1.5);
 
     for (let i = 0; i < this.entities.length; i++) {
       const otherShip = this.entities[i];
       const distanceToOtherShip = this.getDistance(x, y, otherShip.x, otherShip.y);
       const distancePct = distanceToOtherShip / maxPossibleDistance;
 
+      if (distanceToOtherShip <= proximityDistance) {
+        proximityEffect -= proximityDistance - distanceToOtherShip;
+      }
+
       totalPlayerDistancePercentages += distancePct;
     }
 
-    const playerDistanceEffect = totalPlayerDistancePercentages / this.entities.length;
+    console.log(`${x},${y} proximity effect: ${proximityEffect}`);
 
-    return playerDistanceEffect;
+    if (this.entities.length > 0) {
+      const playerDistanceEffect = totalPlayerDistancePercentages / this.entities.length;
+      return playerDistanceEffect + proximityDistance;
+    }
+    else {
+      return 0;
+    }
+  }
+*/
+
+  getValueFromPlayerDistances(x, y) {
+    var lowestDistancePct = 1;
+    const centerCoordinate = Math.floor(this.boardSize / 2);
+    const maxPossibleDistance = this.getDistance(0, 0, centerCoordinate, centerCoordinate);
+
+    for (let i = 0; i < this.entities.length; i++) {
+      const otherShip = this.entities[i];
+      const distanceToOtherShip = this.getDistance(x, y, otherShip.x, otherShip.y);
+      const distancePct = distanceToOtherShip / maxPossibleDistance;
+
+      if (distancePct < lowestDistancePct) {
+        lowestDistancePct = distancePct;
+      }
+    }
+
+    return lowestDistancePct;
   }
 
   getValueFromDistanceFromCenter(x, y) {
+    //console.log(`distance from center calculation for ${x}, ${y}`);
     const centerCoordinate = Math.floor(this.boardSize / 2);
+    //console.log(`center: ${centerCoordinate}`);
     const distance = this.getDistance(x, y, centerCoordinate, centerCoordinate);
+    //console.log(`distance: ${distance}`);
     const maxDistance = this.getDistance(0, 0, centerCoordinate, centerCoordinate);
-    const distanceEffect = distance / maxDistance;
+    //console.log(`max distance: ${maxDistance}`);
+    const distanceEffect = 1 - (distance / maxDistance);
 
-    return distanceEffect;
+    //console.log(`distanceEffect: ${distanceEffect}`);
+
+    return distanceEffect / 1.5;
   }
 
   getDistance(x, y, targetX, targetY) {
-    const xd = Math.abs(x - targetX) ^ 2;
-    const yd = Math.abs(y - targetY) ^ 2;
+    //console.log(`distance calculation ${x},${y} to ${targetX},${targetY}`);
+    var xd = Math.abs(x - targetX);
+    xd = xd * xd;
+
+    var yd = Math.abs(y - targetY);
+    yd = yd * yd;
+
+    //console.log(`d values: ${xd},${yd}`);
     const distance = Math.sqrt(xd + yd);
+    //console.log(`distance = ${distance}`);
 
     return distance;
   }
@@ -367,6 +409,7 @@ class Game {
         }
 
         if (cellExplodes) {
+          this.addMessage(`Explosion at ${x}, ${y}`);
           this.killEverythingInCell(cell);
           this.addShrapnelForExplosion(x, y, needsShrapnel);
         }
@@ -386,7 +429,7 @@ class Game {
 
   killEverythingInCell(explodingCell) {
     for (let i = 0; i < explodingCell.entities.length; i++) {
-      const entity = explodingCell.entities[i];
+      const entity = explodingCell.entities[i] ;
 
       if (entity.type == ShipType) {
         this.killPlayer(entity.owner);
@@ -404,10 +447,15 @@ class Game {
   }
 
   killPlayer(player) {
-    console.log(`Player ${player.id} has died`);
+    this.addMessage(`Player ${player.id} has died`);
     player.alive = false;
     player.turnHasBeenSubmitted = true;
     player.ship = null;
+  }
+
+  addMessage(message) {
+    this.messages.push(message);
+    console.log(`MESSAGE: ${message}`);
   }
 
   addShrapnelForExplosion(x, y, needsShrapnel) {
@@ -460,6 +508,7 @@ class Game {
       height: this.boardSize,
       players: [],
       items: [],
+      messages: [],
     }
 
     for (let i = 0; i < this.players.length; i++) {
@@ -477,6 +526,14 @@ class Game {
         state.items.push({ id: BulletType, col: entity.x, row: entity.y, dir: entity.moveDirection });
       }
     }
+
+    for (let i = 0; i < this.messages; i++) {
+      const message = this.messages[i];
+
+      state.messages.push(message);
+    }
+
+    this.messages = [];
           /*"width": 20,
           "height": 20,
           "players": [
