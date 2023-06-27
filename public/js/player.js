@@ -29,7 +29,10 @@ function handleStartGame() {
 }
 
 function handleEndTurn() {
-    // Send end turn
+    message = {};
+    message.type = 'playerEndTurn';
+    message.moveDir = moveDir;
+    message.fireDir = fireDir;
 }
 
 $(document).ready(function(){

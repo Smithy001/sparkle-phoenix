@@ -2,11 +2,27 @@ const WebSocket = require('ws');
 var wss;
 var players = new Map();
 var observers = new Map();
+var functions = new Map();
 
 class WSManager {
     constructor() {
         console.log('Initializing WSManager');
         this.setupWSS();
+    }
+
+    addFunction(functionName, functionCallback) {
+        functions.set(functionName, functionCallback);
+    }
+
+    sendMessage(playerId, message) {
+        if (playerId == 'observer') {
+            observers.forEach(function(observer) {
+                observer.send(JSON.stringify(message));
+            });
+        }
+        else if (Object.keys(players).includes(playerId)) {
+            players[playerId].send(JSON.stringify(message));
+        }
     }
 
     setupWSS() {
@@ -31,10 +47,18 @@ class WSManager {
             console.log("Closing connection");
           ws.close();
         }
+
+        if (Object.keys(functions).includes("playerJoin")) {
+            functions['playerJoin'](userId);
+        }
       
         ws.on('message', function(message) {
             console.log(`Received message ${message} from user ${userId}`);
             //let jsonMessage = JSON.parse(message);
+            if (message && message.type && Object.keys(functions).includes(message.type)) {
+                message.playerId = userId;
+                functions[message.type](message);
+            }
         });
       
         ws.on('close', function (event) {

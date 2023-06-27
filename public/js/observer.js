@@ -42,7 +42,7 @@ function loadImages() {
         bulletImage = new Image();
         bulletImage.src = '../img/bullet.png';
         bulletImage.onload = function(){
-            handleStatusUpdate(JSON.parse(testStatusUpdate));
+            //handleStatusUpdate(JSON.parse(testStatusUpdate));
             ready = true;
         }
     }
@@ -136,6 +136,7 @@ function ResizeCanvas() {
 
 login('observer', function(message) {
     console.log(message);
+    handleStatusUpdate(JSON.parse(message));
 });
 loadImages();
 
