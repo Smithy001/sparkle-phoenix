@@ -5,7 +5,18 @@ var gameStarted = false;
 function handleMessage(message) {
     if (!message) {
         console.log("Received an empty message");
-    } 
+        return;
+    } else {    
+        console.log("Got a message:");
+        console.log(message);
+    }
+
+    if (message.color) {
+        $('#playerColorTitle').text(`the ${message.color}`).css('color', message.color);
+    } else {
+        console.log('Invalid message');
+        return;
+    }
 
     if (!gameStarted) {
         handleStartGame();
@@ -13,11 +24,6 @@ function handleMessage(message) {
         $('#turn-end-info').hide();
         $('.game').show();
     }
-
-    if (message.color) {
-        $('#playerColorTitle').text(`the ${message.color}`).css('color', message.color);
-    }
-    console.log("Got a message: " + message);
 }
 
 login('player', handleMessage);
@@ -33,6 +39,8 @@ function handleEndTurn() {
     message.type = 'playerEndTurn';
     message.moveDir = moveDir;
     message.fireDir = fireDir;
+
+    sendMessage(message);
 }
 
 $(document).ready(function(){
@@ -54,9 +62,10 @@ $(document).ready(function(){
     });
 
     $('#end-turn-button').on('click', function(e){
+        console.log(e);
+        handleEndTurn();
         moveDir = null;
         fireDir = null;
-        console.log(e);
         $('#turn-end-info').show();
         $('.game').hide();
         $('#end-turn-button').prop("disabled", true);

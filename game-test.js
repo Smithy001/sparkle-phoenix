@@ -18,28 +18,28 @@ var game = new Game(function(id, state) {
     console.log(state);
 });
 
-game.newGame(3);
+game.newGame(2);
 
 game.playerJoin('abc');
 game.playerJoin('cbd');
-game.playerJoin('edg');
+//game.playerJoin('edg');
 
 game.endTurn('abc', 0, 0);
 game.endTurn('cbd', 5, 7);
-game.endTurn('edg', 1, 4);
+//game.endTurn('edg', 1, 4);
+
+game.endTurn('cbd', 5, 7);
+game.endTurn('abc', 0, 0);
+//game.endTurn('edg', 1, 4);
 
 game.endTurn('abc', 0, 0);
 game.endTurn('cbd', 5, 7);
-game.endTurn('edg', 1, 4);
-
-game.endTurn('abc', 0, 0);
-game.endTurn('cbd', 5, 7);
-game.endTurn('edg', 1, 4);
+//game.endTurn('edg', 1, 4);
 
 // Player abc dies
 
-game.endTurn('cbd', 5, 7);
-game.endTurn('edg', 1, 4);
+//game.endTurn('cbd', 5, 7);
+//game.endTurn('edg', 1, 4);
 
 // Player cbd dies
 

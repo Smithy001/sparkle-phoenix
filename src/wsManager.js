@@ -11,6 +11,7 @@ class WSManager {
     }
 
     addFunction(functionName, functionCallback) {
+        console.log(functionCallback);
         functions.set(functionName, functionCallback);
     }
 
@@ -20,8 +21,8 @@ class WSManager {
                 observer.send(JSON.stringify(message));
             });
         }
-        else if (Object.keys(players).includes(playerId)) {
-            players[playerId].send(JSON.stringify(message));
+        else if (players.has(playerId)) {
+            players.get(playerId).send(JSON.stringify(message));
         }
     }
 
@@ -41,23 +42,28 @@ class WSManager {
       
         if (req.session.userType == 'player') {
           players.set(userId, ws);
+          if (functions.has("playerJoin")) {
+            console.log('Calling player join');
+            functions.get('playerJoin')(userId);
+          }
         } else if (req.session.userType == 'observer') {
           observers.set(userId, ws);
         } else {
             console.log("Closing connection");
           ws.close();
         }
-
-        if (Object.keys(functions).includes("playerJoin")) {
-            functions['playerJoin'](userId);
-        }
       
         ws.on('message', function(message) {
             console.log(`Received message ${message} from user ${userId}`);
-            //let jsonMessage = JSON.parse(message);
-            if (message && message.type && Object.keys(functions).includes(message.type)) {
-                message.playerId = userId;
-                functions[message.type](message);
+
+            let jsonMessage = JSON.parse(message);
+            console.log(functions);
+            console.log(jsonMessage);
+            console.log(functions.has(jsonMessage.type));
+            if (jsonMessage && jsonMessage.type && functions.has(jsonMessage.type)) {
+                console.log('Calling callback');
+                jsonMessage.playerId = userId;
+                functions.get(jsonMessage.type)(jsonMessage);
             }
         });
       

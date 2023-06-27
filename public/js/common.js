@@ -31,9 +31,12 @@ function connect(callback) {
       ws = null;
     };
     ws.onmessage = function(event) {
-        callback(JSON.parse(event));
+        console.log("Received message:")
+        console.log(event)
+        console.log("Calling callback")
+        callback(JSON.parse(event.data));
     }
-    callback("ready");
+    callback({message:"ready"});
 }
 
 function createPlayerImage(image, color) {
@@ -43,7 +46,7 @@ function createPlayerImage(image, color) {
 }
 
 function sendMessage(message) {
-  ws.send(message);
+  ws.send(JSON.stringify(message));
 }
 
 function imageToCanvas(image){

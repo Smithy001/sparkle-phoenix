@@ -1,6 +1,6 @@
 var spaceshipImage;
 var bulletImage;
-var players, gridItems;
+var players = [], gridItems = [];
 var boardWidth, boardHeight;
 var ready = false;
 
@@ -22,6 +22,10 @@ function SetupCanvas() {
 }
 
 function handleStatusUpdate(update) {
+    if (!update || !update.width || !update.height || !update.players || !update.items) {
+        console.log(`Invalid for board update: ${update}`);
+        return;
+    }
     boardWidth = update.width;
     boardHeight = update.height;
     loadPlayers(update.players);
@@ -136,7 +140,7 @@ function ResizeCanvas() {
 
 login('observer', function(message) {
     console.log(message);
-    handleStatusUpdate(JSON.parse(message));
+    handleStatusUpdate(message);
 });
 loadImages();
 

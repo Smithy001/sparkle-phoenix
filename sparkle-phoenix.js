@@ -17,16 +17,19 @@ var game = new Game(function(id, state) {
 });
 
 wsManager.addFunction('playerJoin', function(id) {
-  game.addPlayer(id);
+  console.log('Adding player');
+  game.playerJoin(id);
 });
 
 wsManager.addFunction('playerEndTurn', function(message) {
-  if (message && message.playerId && message.moveDir && message.fireDir) {
+  console.log('Player ending turn');
+  console.log(message);
+  if (message && message.playerId && message.moveDir != null && message.fireDir != null) {
     game.endTurn(message.playerId, message.moveDir, message.fireDir);
   }
 });
 
-game.newGame(3);
+game.newGame(2);
 
 
 
