@@ -3,6 +3,7 @@ var wss;
 var players = new Map();
 var observers = new Map();
 var functions = new Map();
+var lastObserverMessage;
 
 class WSManager {
     constructor() {
@@ -17,8 +18,9 @@ class WSManager {
 
     sendMessage(playerId, message) {
         if (playerId == 'observer') {
+            lastObserverMessage = JSON.stringify(message);
             observers.forEach(function(observer) {
-                observer.send(JSON.stringify(message));
+                observer.send(lastObserverMessage);
             });
         }
         else if (players.has(playerId)) {
@@ -48,6 +50,9 @@ class WSManager {
           }
         } else if (req.session.userType == 'observer') {
           observers.set(userId, ws);
+          if (lastObserverMessage) {
+            ws.send(lastObserverMessage);
+          }
         } else {
             console.log("Closing connection");
           ws.close();

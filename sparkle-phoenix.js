@@ -3,33 +3,54 @@
 const HttpServer = require('./src/httpServer');
 const WSManager = require('./src/wsManager');
 const Game = require('./src/game');
+const Sim = require('./src/simulator');
+const isSim = (process.argv.indexOf('-sim') > -1);
 
-var wsManager = new WSManager();
+if (isSim) {
+  var playerCount = 2;
 
-var httpServer = new HttpServer(80, wsManager);
+  var sim = new Sim(playerCount);
 
-httpServer.startServer();
+  var game = new Game(function(id, state) {
+    console.log(`Callback = ID: ${id}`);
+    console.log(state);
+    sim.simProcessState(id, state);
+  });
 
-var game = new Game(function(id, state) {
-  console.log(`Callback = ID: ${id}`);
-  console.log(state);
-  wsManager.sendMessage(id, state);
-});
+  sim.addGame(game);
 
-wsManager.addFunction('playerJoin', function(id) {
-  console.log('Adding player');
-  game.playerJoin(id);
-});
+  game.newGame(playerCount);
+} else {
 
-wsManager.addFunction('playerEndTurn', function(message) {
-  console.log('Player ending turn');
-  console.log(message);
-  if (message && message.playerId && message.moveDir != null && message.fireDir != null) {
-    game.endTurn(message.playerId, message.moveDir, message.fireDir);
-  }
-})
+  var wsManager = new WSManager();
 
-game.newGame(2);
+  var httpServer = new HttpServer(80, wsManager);
+
+  httpServer.startServer();
+
+  var game = new Game(function(id, state) {
+    console.log(`Callback = ID: ${id}`);
+    console.log(state);
+    wsManager.sendMessage(id, state);
+  });
+
+  wsManager.addFunction('playerJoin', function(id) {
+    console.log('Adding player');
+    game.playerJoin(id);
+  });
+
+  wsManager.addFunction('playerEndTurn', function(message) {
+    console.log('Player ending turn');
+    console.log(message);
+    if (message && message.playerId && message.moveDir != null && message.fireDir != null) {
+      game.endTurn(message.playerId, message.moveDir, message.fireDir);
+    }
+  })
+  
+  game.newGame(2);
+}
+
+
 
 
 

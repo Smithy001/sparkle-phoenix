@@ -19,7 +19,7 @@ function connect(callback) {
       ws.close();
     }
 
-    ws = new WebSocket(`ws://${location.host}`);
+    ws = new WebSocket(`wss://${location.host}`);
     ws.onerror = function () {
       showMessage('WebSocket error');
     };
@@ -92,7 +92,7 @@ var testStatusUpdate = `
 {"id": "bullet", "col": 8, "row": 5, "dir": 7},
 {"id": "bullet", "col": 12, "row": 15, "dir": 5},
 {"id": "bullet", "col": 15, "row": 5, "dir": 2},
-{"id": "bullet", "col": 9, "row": 15, "dir": 6}
+{"id": "explosion", "col": 9, "row": 15, "dir": 6}
 ]
 }
 `;

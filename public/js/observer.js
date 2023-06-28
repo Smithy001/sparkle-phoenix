@@ -1,5 +1,4 @@
-var spaceshipImage;
-var bulletImage;
+var spaceshipImage, bulletImage, explosionImage;
 var players = [], gridItems = [];
 var boardWidth, boardHeight;
 var ready = false;
@@ -41,16 +40,28 @@ function loadPlayers(playerList) {
 }
 
 function loadImages() {
+    loadImageShip();
+}
+
+function loadImageShip() {
     spaceshipImage = new Image();
     spaceshipImage.src = '../img/spaceship.png';
-    spaceshipImage.onload = function(){
-        bulletImage = new Image();
-        bulletImage.src = '../img/bullet.png';
-        bulletImage.onload = function(){
-            //handleStatusUpdate(JSON.parse(testStatusUpdate));
-            ready = true;
-        }
-    }
+    spaceshipImage.onload = loadImageBullet;
+}
+
+function loadImageBullet() {
+    bulletImage = new Image();
+    bulletImage.src = '../img/bullet.png';
+    bulletImage.onload = loadImageExplosion;
+}
+
+function loadImageExplosion() {
+    explosionImage = new Image();
+    explosionImage.src = '../img/explosion.png';
+    explosionImage.onload = function () {
+        ready = true;
+        handleStatusUpdate(JSON.parse(testStatusUpdate));
+    };
 }
 
 function animate(canvas, context) {
@@ -89,6 +100,8 @@ function drawGridItems(canvas, context, cellSize, xOffset, yOffset, borderSize) 
 
         if (item.id == 'bullet') {
             drawImage(context, bulletImage, x, y, cellSize, item.dir*45, borderSize);
+        } else if (item.id == 'explosion') {
+            drawImage(context, explosionImage, x, y, cellSize, item.dir*45, borderSize);
         } else {
             if (players[item.id]) {
                 drawImage(context, players[item.id], x, y, cellSize, item.dir*45, borderSize);

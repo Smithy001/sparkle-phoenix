@@ -321,9 +321,14 @@ class Game {
       else {
         entity.needsToExplode = true;
       }
+    }
 
-      if (entity.type == ShipType) {
-        this.shootBullet(entity);
+    for (let i = 0; i < this.players.length; i++) {
+      const player = this.players[i];
+
+      if (player.alive) {
+        const ship = player.ship;
+        this.shootBullet(ship);
       }
     }
   }
