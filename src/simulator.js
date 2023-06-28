@@ -1,6 +1,6 @@
 const uuid = require('uuid');
 
-class WSManager {
+class Simulator {
     constructor(players) {
         console.log('Initializing simulation');
         this.players = [];
@@ -22,7 +22,7 @@ class WSManager {
     }
 
     simProcessState() {
-        
+
     }
 
     determineBestMove() {
@@ -37,3 +37,5 @@ class WSManager {
         return Math.floor(Math.random() * max);
     }
 }
+
+module.exports = Simulator;

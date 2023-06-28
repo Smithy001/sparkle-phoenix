@@ -6,14 +6,10 @@ const Game = require('./src/game');
 const Common = require('./src/common');
 const Sim = require('./src/simulator');
 const isSim = (process.argv.indexOf('-sim') > -1);
-
-console.log(Common.getArgument('players'));
-
-process.exit();
+const playerCount = Common.getPlayerCount();
 
 if (isSim) {
-  var playerCount = 2;
-
+  console.log(Sim);
   var sim = new Sim(playerCount);
 
   var game = new Game(function(id, state) {
@@ -52,7 +48,7 @@ if (isSim) {
     }
   })
   
-  game.newGame(2);
+  game.newGame(playerCount);
 }
 
 

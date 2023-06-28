@@ -16,9 +16,16 @@ function getArgument(name) {
     return options['-'+name];
 }
 
+function getPlayerCount() {
+    var playerCount = getArgument('players');
+    if (!playerCount) {
+        playerCount = 2;
+    }
+    return playerCount;
+}
+
 // Export the functions
 module.exports = {
-    default: {
-        getArgument
-    }
-  };
+    getArgument: getArgument,
+    getPlayerCount: getPlayerCount
+};
