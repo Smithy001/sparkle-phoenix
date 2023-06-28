@@ -2,6 +2,7 @@ const session = require('express-session');
 const express = require('express');
 const http = require('http');
 const uuid = require('uuid');
+var Port;
 var wsManager;
 
 sessionParser = session({
@@ -14,7 +15,7 @@ class HttpServer {
     constructor(port, wsm) {
         wsManager = wsm;
 
-        this.port = port;
+        Port = port;
         this.express = express();
         this.configServer();
     }
@@ -74,8 +75,8 @@ class HttpServer {
         //
         // Start the server.
         //
-        this.server.listen(this.port, function () {
-            console.log('Listening on http://localhost:8080');
+        this.server.listen(Port, function () {
+            console.log('Listening on http://localhost:' + Port);
         });
     }
 

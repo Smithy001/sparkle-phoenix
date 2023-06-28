@@ -65,7 +65,20 @@ class Game {
         this.gameStarted = true;
         this.startGame();
       }
+    } else {
+      var player = this.findPlayer(playerId);
+      if (player && player.turnHasBeenSubmitted == false) {
+        this.pushStateToOnePlayer(player);
+      }
     }
+  }
+
+  findPlayer(playerId) {
+    return this.players.forEach(function(player){
+      if (player.id == playerId) {
+        return player;
+      }
+    });
   }
 
   startGame() {
@@ -485,10 +498,14 @@ class Game {
   pushStateToPlayers() {
     for (let i = 0; i < this.players.length; i++) {
       const player = this.players[i];
-      const playerState = this.getStateForOnePlayer(player);
-
-      this.pushStateCallback(player.id, playerState);
+      this.pushStateToOnePlayer(player);
     }
+  }
+
+  pushStateToOnePlayer(player) {
+    const playerState = this.getStateForOnePlayer(player);
+
+    this.pushStateCallback(player.id, playerState);
   }
 
   pushStateToObservers() {

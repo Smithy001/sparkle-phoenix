@@ -26,6 +26,7 @@ function handleStatusUpdate(update) {
         console.log(`Invalid for board update: ${update}`);
         return;
     }
+    $('#pregame-info').remove();
     boardWidth = update.width;
     boardHeight = update.height;
     loadPlayers(update.players);

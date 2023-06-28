@@ -6,7 +6,7 @@ const Game = require('./src/game');
 
 var wsManager = new WSManager();
 
-var httpServer = new HttpServer(8080, wsManager);
+var httpServer = new HttpServer(80, wsManager);
 
 httpServer.startServer();
 
@@ -27,7 +27,7 @@ wsManager.addFunction('playerEndTurn', function(message) {
   if (message && message.playerId && message.moveDir != null && message.fireDir != null) {
     game.endTurn(message.playerId, message.moveDir, message.fireDir);
   }
-});
+})
 
 game.newGame(2);
 

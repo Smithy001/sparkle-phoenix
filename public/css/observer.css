@@ -14,3 +14,11 @@ body {
   -ms-user-select: none;
   user-select: none;
 }
+
+.game-info {
+  position: fixed;
+  font-size: 2em;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
