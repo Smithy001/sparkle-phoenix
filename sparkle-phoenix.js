@@ -3,8 +3,13 @@
 const HttpServer = require('./src/httpServer');
 const WSManager = require('./src/wsManager');
 const Game = require('./src/game');
+const Common = require('./src/common');
 const Sim = require('./src/simulator');
 const isSim = (process.argv.indexOf('-sim') > -1);
+
+console.log(Common.getArgument('players'));
+
+process.exit();
 
 if (isSim) {
   var playerCount = 2;
