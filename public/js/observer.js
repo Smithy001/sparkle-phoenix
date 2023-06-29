@@ -60,7 +60,7 @@ function loadImageExplosion() {
     explosionImage.src = '../img/explosion.png';
     explosionImage.onload = function () {
         ready = true;
-        handleStatusUpdate(JSON.parse(testStatusUpdate));
+        //handleStatusUpdate(JSON.parse(testStatusUpdate));
     };
 }
 

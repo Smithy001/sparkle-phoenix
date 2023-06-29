@@ -548,7 +548,7 @@ class Game {
 
     for (let i = 0; i < this.players.length; i++) {
       const player = this.players[i];
-      state.players.push({ id: player.id, color: player.color });
+      state.players.push({ id: player.id, color: player.color, alive: player.alive });
     }
 
     for (let i = 0; i < this.entities.length; i++) {
