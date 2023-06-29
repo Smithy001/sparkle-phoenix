@@ -4,15 +4,15 @@ var theGame;
 var eventLoop;
 
 class Simulator {
-    constructor() {
+    constructor(tickSpeed) {
         console.log('Initializing simulation');
-        this.interval = 1000;
+        this.interval = tickSpeed;
     }
 
     startSim (game, playerCount) {
-        this.playerCount;
+        this.playerCount = playerCount;
         theGame = game;
-        game.newGame(playerCount);
+        game.newGame(this.playerCount);
 
         for (let i = 0; i < this.playerCount; i++) {
             let id = uuid.v4();
@@ -47,6 +47,7 @@ class Simulator {
         if (Object.keys(players).length < 2) {
             console.log('Game over');
             clearInterval(eventLoop);
+            process.exit();
         }
 
         console.log('### End processing state ###');
