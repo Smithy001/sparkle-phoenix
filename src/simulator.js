@@ -4,14 +4,15 @@ var theGame;
 var eventLoop;
 
 class Simulator {
-    constructor(players) {
+    constructor() {
         console.log('Initializing simulation');
-        this.interval = 500;
-        this.playerCount = players;
+        this.interval = 1000;
     }
 
-    startSim (game) {
+    startSim (game, playerCount) {
+        this.playerCount;
         theGame = game;
+        game.newGame(playerCount);
 
         for (let i = 0; i < this.playerCount; i++) {
             let id = uuid.v4();
