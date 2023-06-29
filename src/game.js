@@ -45,12 +45,7 @@ class Game {
 
     return board;
   }
-/*
-  X X X
-1 2 B X
-4 O 6 X
-7 8 9
-*/
+
   playerJoin(playerId) {
     console.log(`player with id of ${playerId} is attempting to join`);
     if (!this.gameStarted)
@@ -312,14 +307,24 @@ class Game {
   everythingMovesAndShoots() {
     for (let i = 0; i < this.entities.length; i++) {
       const entity = this.entities[i];
-      const newLocation = this.getNewLocationFromDirection(entity.x, entity.y, entity.moveDirection);
-      const newLocationIsOnTheMap = this.validXY(newLocation.x, newLocation.y);
+      var newLocation = this.getNewLocationFromDirection(entity.x, entity.y, entity.moveDirection);
+      var newLocationIsOnTheMap = this.validXY(newLocation.x, newLocation.y);
 
       if (newLocationIsOnTheMap) {
         this.moveOneEntity(entity, newLocation);
       }
       else {
-        entity.needsToExplode = true;
+        if (entity.type == 'ship') {
+          while(!newLocationIsOnTheMap) {
+            entity.moveDirection = this.rotateMoveDirection(entity.moveDirection);
+            newLocation = this.getNewLocationFromDirection(entity.x, entity.y, entity.moveDirection);
+            var newLocationIsOnTheMap = this.validXY(newLocation.x, newLocation.y);
+          }
+          
+          this.moveOneEntity(entity, newLocation);
+        } else {
+          entity.needsToExplode = true;
+        }
       }
     }
 
@@ -331,6 +336,14 @@ class Game {
         this.shootBullet(ship);
       }
     }
+  }
+
+  rotateMoveDirection(direction) {
+    direction += 1;
+    if (direction > 7) {
+      direction = 0;
+    }
+    return direction;
   }
 
   getNewLocationFromDirection(x, y, direction) {

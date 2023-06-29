@@ -1,41 +1,64 @@
 const uuid = require('uuid');
+var players = {};
+var theGame;
+var eventLoop;
 
 class Simulator {
     constructor(players) {
         console.log('Initializing simulation');
-        this.players = [];
-        this.interval = 100;
-        this.players = players;
+        this.interval = 500;
+        this.playerCount = players;
     }
 
-    startSim () {
-        for (let i = 0; i < this.players; i++) {
+    startSim (game) {
+        theGame = game;
+
+        for (let i = 0; i < this.playerCount; i++) {
             let id = uuid.v4();
-            this.players.push(id)
-            this.game.playerJoin(id);
+            players[id] = 1;
+            theGame.playerJoin(id);
         }
-        this.setInterval(this.simulationTick, this.interval);
+        eventLoop = setInterval(this.simulationTick, this.interval);
     }
 
     simulationTick() {
+        console.log('tick');
 
+        Object.keys(players).forEach(playerId => {
+            console.log(`Processing player: ${playerId}`);
+            theGame.endTurn(playerId, determineBestMove(), determineBestMove());
+        });
     }
 
-    simProcessState() {
+    processState(id, state) {
+        if (id == 'observer') {
+            return;
+        }
+        console.log('### Start processing state ###');
+        console.log(id);
+        console.log(state);
 
+        if (state.alive == false) {
+            console.log(`Deleting player: ${id}`);
+            delete players[id];
+        }
+
+        if (Object.keys(players).length < 2) {
+            console.log('Game over');
+            clearInterval(eventLoop);
+        }
+
+        console.log('### End processing state ###');
     }
 
-    determineBestMove() {
-        return [this.getRandomInt(7), this.getRandomInt(7)];
-    }
+}
 
-    addGame(game) {
-        this.game = game;
-    }
+function determineBestMove() {
+    return getRandomInt(7);
+}
 
-    getRandomInt(max) {
-        return Math.floor(Math.random() * max);
-    }
+function getRandomInt(max) {
+    return Math.floor(Math.random() * max);
 }
 
 module.exports = Simulator;

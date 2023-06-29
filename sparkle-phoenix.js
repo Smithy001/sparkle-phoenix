@@ -15,12 +15,12 @@ if (isSim) {
   var game = new Game(function(id, state) {
     console.log(`Callback = ID: ${id}`);
     console.log(state);
-    sim.simProcessState(id, state);
+    sim.processState(id, state);
   });
 
-  sim.addGame(game);
-
   game.newGame(playerCount);
+
+  sim.startSim(game);
 } else {
 
   var wsManager = new WSManager();
