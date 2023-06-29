@@ -12,7 +12,6 @@ class WSManager {
     }
 
     addFunction(functionName, functionCallback) {
-        console.log(functionCallback);
         functions.set(functionName, functionCallback);
     }
 
@@ -43,19 +42,23 @@ class WSManager {
         const userId = req.session.userId;
       
         if (req.session.userType == 'player') {
-          players.set(userId, ws);
-          if (functions.has("playerJoin")) {
-            console.log('Calling player join');
-            functions.get('playerJoin')(userId);
-          }
+            players.set(userId, ws);
+            if (functions.has("playerJoin")) {
+                console.log('Calling player join');
+                functions.get('playerJoin')(userId);
+            }
         } else if (req.session.userType == 'observer') {
-          observers.set(userId, ws);
-          if (lastObserverMessage) {
-            ws.send(lastObserverMessage);
-          }
+            if (functions.has("ObserverJoin")) {
+                console.log('Calling ObserverJoin');
+                functions.get('ObserverJoin')(userId);
+            }
+            observers.set(userId, ws);
+            if (lastObserverMessage) {
+                ws.send(lastObserverMessage);
+            }
         } else {
             console.log("Closing connection");
-          ws.close();
+            ws.close();
         }
       
         ws.on('message', function(message) {

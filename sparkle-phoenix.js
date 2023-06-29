@@ -5,20 +5,52 @@ const WSManager = require('./src/wsManager');
 const Game = require('./src/game');
 const Common = require('./src/common');
 const Sim = require('./src/simulator');
-const isSim = (process.argv.indexOf('-sim') > -1);
-const playerCount = Common.getPlayerCount();
+const simMode = Common.getArgument('sim', false);
+const observerMode = Common.getArgument('observe', false);
+const playerCount = Common.getArgument('players', 2);
+const simModeTickSpeed = Common.getArgument('tick', 2000);
+const helpMode = Common.getArgument('help', false);
 
-if (isSim) {
-  console.log(Sim);
-  var sim = new Sim();
+if (helpMode) {
+  console.log(`
+  Sparkle Phoenix
+
+  args:
+  -players [number]     Player count
+  -sim                  Simulation mode
+  -observe              Wait for an observer to join before starting Simulation mode
+  -tick [number]        Milliseconds to wait between each making each move during Simulation mode
+  `);
+  process.exit();
+}
+
+if (simMode) {
+  var wsManager = new WSManager();
+  var httpServer = new HttpServer(80, wsManager);
+  console.log(playerCount);
+  var sim = new Sim(simModeTickSpeed);
+
+  httpServer.startServer();
 
   var game = new Game(function(id, state) {
     console.log(`Callback = ID: ${id}`);
     console.log(state);
     sim.processState(id, state);
+
+    if (id == 'observer') {
+      wsManager.sendMessage(id, state);
+    }
   });
 
-  sim.startSim(game, playerCount);
+  if (observerMode) {
+    console.log('Simulation Observer mode, waiting for observer to join...');
+    wsManager.addFunction('ObserverJoin', function(id) {
+      console.log('Observer has joined, starting game.');
+      sim.startSim(game, playerCount);
+    });
+  } else {
+    sim.startSim(game, playerCount);
+  }
 } else {
 
   var wsManager = new WSManager();
