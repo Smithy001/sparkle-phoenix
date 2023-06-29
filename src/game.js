@@ -239,7 +239,7 @@ class Game {
   }
 
   endTurn(id, moveDirection, shootDirection) {
-    //console.log(`player ${id} submitted turn: move=${moveDirection}, shoot=${shootDirection}`);
+    console.log(`player ${id} submitted turn: move=${moveDirection}, shoot=${shootDirection}`);
     const player = this.findPlayer(id);
     //console.log(`found player with id ${player.id}. ship is ${player.ship}`);
     if (player.alive) {
@@ -308,9 +308,14 @@ class Game {
       else {
         entity.needsToExplode = true;
       }
+    }
 
-      if (entity.type == ShipType) {
-        this.shootBullet(entity);
+    for (let i = 0; i < this.players.length; i++) {
+      const player = this.players[i];
+
+      if (player.alive) {
+        const ship = player.ship;
+        this.shootBullet(ship);
       }
     }
   }
@@ -417,7 +422,7 @@ class Game {
     }
 
     for (let i = 0; i < needsShrapnel.length; i++) {
-      //everything in each of these cells goes away and instead a single missle is placed
+      //everything in each of these cells goes away and instead a single bullet is placed
       const shrapnelCell = needsShrapnel[i];
       const explodingCell = this.board[shrapnelCell.x][shrapnelCell.y];
       this.killEverythingInCell(explodingCell);
@@ -429,7 +434,7 @@ class Game {
 
   killEverythingInCell(explodingCell) {
     for (let i = 0; i < explodingCell.entities.length; i++) {
-      const entity = explodingCell.entities[i] ;
+      const entity = explodingCell.entities[i];
 
       if (entity.type == ShipType) {
         this.killPlayer(entity.owner);
