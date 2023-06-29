@@ -1,17 +1,22 @@
 MVP v1.0 features:
 
-* Messages list implemented on observers
-* Register Explosions first, before spawning shrapnal the following turn
-* Support multiple observers 
-* Fix issues with players disappearing
-* Player interface updates to display if you've eliminated
+Sam:
 * Add simulator observer mode (waits for observer to join)
+* Player interface updates to display if you've eliminated
+* Support multiple observers
+* Messages list implemented on observers
+* Fix explosion transparency
+
+
+Caleb:
+* Fix issues with players disappearing
+* Register Explosions (id: explosion) first, before spawning shrapnal the following turn 
+* Send new messages for the turn in observer status
+* Include player color instead of player id in messages
+
 
 MVP v2.0 features:
 
-* S
 * Animate observers
-
-
 
 * Fix player edge collisions (DONE)
