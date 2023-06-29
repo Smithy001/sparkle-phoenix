@@ -10,7 +10,7 @@ const playerCount = Common.getPlayerCount();
 
 if (isSim) {
   console.log(Sim);
-  var sim = new Sim(playerCount);
+  var sim = new Sim();
 
   var game = new Game(function(id, state) {
     console.log(`Callback = ID: ${id}`);
@@ -18,9 +18,7 @@ if (isSim) {
     sim.processState(id, state);
   });
 
-  game.newGame(playerCount);
-
-  sim.startSim(game);
+  sim.startSim(game, playerCount);
 } else {
 
   var wsManager = new WSManager();
