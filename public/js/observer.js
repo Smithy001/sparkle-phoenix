@@ -2,6 +2,7 @@ var spaceshipImage, bulletImage, explosionImage;
 var players = [], gridItems = [];
 var boardWidth, boardHeight;
 var ready = false;
+const borderSize = 2;
 
 function SetupCanvas() {
     canvas = document.getElementById('world');
@@ -30,6 +31,21 @@ function handleStatusUpdate(update) {
     boardHeight = update.height;
     loadPlayers(update.players);
     gridItems = update.items;
+    ResizeCanvas();
+    addMessages(update.messages);
+}
+
+function addMessages(messages) {
+    if (!messages) {
+        return;
+    }
+    let messagesElement = $('#messages');
+
+    messages.forEach(function(message){
+        messagesElement.prepend(`\n${message}`);
+    });
+    
+    $('.messages-container').show().animate({ scrollTop: 0 }, "fast");
 }
 
 function loadPlayers(playerList) {
@@ -60,10 +76,12 @@ function loadImageExplosion() {
     explosionImage.src = '../img/explosion.png';
     explosionImage.onload = function () {
         ready = true;
-        //handleStatusUpdate(JSON.parse(testStatusUpdate));
+        if (isFragmentPresent('sim')) {
+            handleStatusUpdate(getObserverTestData('end-game'));
+        }
     };
 }
-
+ 
 function animate(canvas, context) {
     if (ready) {
         drawGrid(canvas, context)
@@ -74,23 +92,16 @@ function animate(canvas, context) {
 }
 
 function drawGrid(canvas, context) {
-    const borderSize = 2;
-    const cellSize = Math.min(canvas.width, canvas.height) / boardWidth;
-    const gridWidth = cellSize * boardWidth;
-    const gridHeight = cellSize * boardHeight;
-    const xOffset = (canvas.width - gridWidth) / 2;
-    const yOffset = (canvas.height - gridHeight) / 2;
-    
     context.clearRect(0, 0, canvas.width, canvas.height);
     
     for (let row = 0; row < boardWidth; row++) {
         for (let col = 0; col < boardHeight; col++) {
-            const x = xOffset + col * cellSize;
-            const y = yOffset + row * cellSize;
-            drawCell(context, x, y, cellSize, borderSize);
+            const x = canvas.xOffset + col * canvas.cellSize;
+            const y = canvas.yOffset + row * canvas.cellSize;
+            drawCell(context, x, y, canvas.cellSize, borderSize);
         }
     }
-    drawGridItems(canvas, context, cellSize, xOffset, yOffset, borderSize);
+    drawGridItems(canvas, context, canvas.cellSize, canvas.xOffset, canvas.yOffset, borderSize);
 }
 
 function drawGridItems(canvas, context, cellSize, xOffset, yOffset, borderSize) {
@@ -149,7 +160,15 @@ function drawImage(context, image, x, y, size, degrees, borderSize) {
 
 function ResizeCanvas() { 
     canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight; 
+    canvas.height = window.innerHeight;
+    canvas.cellSize = Math.min(canvas.width, canvas.height) / boardWidth;
+    const gridWidth = canvas.cellSize * boardWidth;
+    const gridHeight = canvas.cellSize * boardHeight;
+    canvas.xOffset = (canvas.width - gridWidth) * 0.7;
+    canvas.yOffset = (canvas.height - gridHeight);
+
+    $('.messages-container').innerWidth(canvas.xOffset);
+    $('.messages-container').innerHeight(canvas.height);
 }
 
 login('observer', function(message) {

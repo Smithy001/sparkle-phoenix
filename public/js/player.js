@@ -2,7 +2,7 @@ var moveDir;
 var fireDir;
 var gameStarted = false;
 
-function handleMessage(message) {
+function handleStatusUpdate(message) {
     if (!message) {
         console.log("Received an empty message");
         return;
@@ -24,14 +24,29 @@ function handleMessage(message) {
         $('#turn-end-info').hide();
         $('.game').show();
     }
+
+    if (message.alive == false) {
+        handleEndGame();
+    } else if (message.winner == true) {
+        handleEndGame(true);
+    }
 }
 
-login('player', handleMessage);
+login('player', handleStatusUpdate);
 
 function handleStartGame() {
     $('#pregame-info').remove();
     $('.game').show();
     gameStarted = true;
+}
+
+function handleEndGame(winner) {
+    if (winner == true) {
+        $('#postgame-info').text('You are victorious!');
+    }
+    $('#postgame-info').show();
+    $('.game').hide();
+    gameStarted = false;
 }
 
 function handleEndTurn() {
@@ -71,4 +86,8 @@ $(document).ready(function(){
         $('#end-turn-button').prop("disabled", true);
         $('.selected').removeClass('selected');
     });
+
+    if (isFragmentPresent('sim')) {
+        handleStatusUpdate(getPlayerTestData('dead'));
+    }
 });
