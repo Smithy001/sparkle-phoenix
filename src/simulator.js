@@ -10,6 +10,11 @@ class Simulator {
     }
 
     startSim (game, playerCount) {
+        if (this.running) {
+            return;
+        }
+        
+        this.running = true;
         this.playerCount = playerCount;
         theGame = game;
         game.newGame(this.playerCount);
