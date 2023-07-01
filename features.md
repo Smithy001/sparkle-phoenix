@@ -13,11 +13,11 @@ Sam:
 * Add end-game callback
 
 Caleb:
-* Register Explosions (id: explosion) first, before spawning shrapnal the following turn 
-* Fix issues with players disappearing
-* Send new messages for the turn in observer status
-* Include player color instead of player id in messages
-* Send "winner": true in player update, when a player wins
+* Register Explosions (id: explosion) first, before spawning shrapnal the following turn **DONE**
+* Fix issues with players disappearing **DONE**
+* Send new messages for the turn in observer status **DONE**
+* Include player color instead of player id in messages **DONE**
+* Send "winner": true in player update, when a player wins 
 
 
 MVP v2.0 features:

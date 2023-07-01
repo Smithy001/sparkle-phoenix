@@ -15,6 +15,7 @@ class Game {
     this.pushStateCallback = pushStateCallbackParameter;
     this.messages = [];
     this.shrapenlIsOn = !noShrapnel;
+    this.gameOver = false;
   }
 
   newGame(expectedPlayers) {
@@ -81,7 +82,7 @@ class Game {
       this.entities.push(player.ship);
     }
 
-    this.push();
+    this.pushStateToAll();
   }
 
   getRandomDirection() {
@@ -247,14 +248,24 @@ class Game {
     //Decide on explosions and/or add shrapnels
     this.determineWhatExplodesAndAddExplosions();
 
+    const alivePlayers = [];
+
     for (let i = 0; i < this.players.length; i++) {
       const player = this.players[i];
       if (player.alive) {
         player.turnHasBeenSubmitted = false;
+        alivePlayers.push(player);
       }
     }
 
-    this.push();
+    if (alivePlayers.length == 0) {
+      this.gameOver = true;
+    }
+    else if (alivePlayers.length == 1) {
+      alivePlayers[0].winner = true;
+    }
+
+    this.pushStateToAll();
   }
 
   everythingMovesAndShoots() {
@@ -267,19 +278,19 @@ class Game {
         if (newLocationIsOnTheMap) {
           this.moveOneEntity(entity, newLocation);
         }
-        /*else {
+        else {
           if (entity.type == ShipType) {
             while(!newLocationIsOnTheMap) {
               entity.moveDirection = this.rotateMoveDirection(entity.moveDirection);
               newLocation = this.getNewLocationFromDirection(entity.x, entity.y, entity.moveDirection);
-              var newLocationIsOnTheMap = this.validXY(newLocation.x, newLocation.y);
+              newLocationIsOnTheMap = this.validXY(newLocation.x, newLocation.y);
             }
             
             this.moveOneEntity(entity, newLocation);
           } else {
             entity.needsToExplode = true;
           }
-        }*/
+        }
       }
 
     for (let i = 0; i < this.explosions.length; i++) {
@@ -432,7 +443,7 @@ class Game {
       const index = this.entities.indexOf(entity);
       
       if (entity.type == ShipType) {
-        entity.owner.alive = false;
+        this.killPlayer(entity.owner);
       }
 
       this.entities.splice(index, 1);
@@ -461,25 +472,6 @@ class Game {
     }
   }
 
-  killEverythingInCell(explodingCell) {
-    for (let i = 0; i < explodingCell.entities.length; i++) {
-      const entity = explodingCell.entities[i];
-
-      if (entity.type == ShipType) {
-        this.killPlayer(entity.owner);
-        entity.owner.alive = false;
-      }
-
-      const index = this.entities.indexOf(entity);
-
-      if (index > -1) {
-        this.entities.splice(entity, 1);
-      }
-    }
-
-     explodingCell.entities = [];
-  }
-
   killPlayer(player) {
     this.addMessage(`${player.color} player has died`);
     player.alive = false;
@@ -501,7 +493,7 @@ class Game {
     }
   }
 
-  push() {
+  pushStateToAll() {
     this.pushStateToPlayers();
     this.pushStateToObservers();
   }
@@ -537,11 +529,12 @@ class Game {
       players: [],
       items: [],
       messages: [],
+      gameOver: this.gameOver
     }
 
     for (let i = 0; i < this.players.length; i++) {
       const player = this.players[i];
-      state.players.push({ id: player.id, color: player.color, alive: player.alive });
+      state.players.push({ id: player.id, color: player.color, alive: player.alive, winner: player.winner });
     }
 
     for (let i = 0; i < this.entities.length; i++) {
