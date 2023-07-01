@@ -31,6 +31,10 @@ body {
     display: none;
 }
 
+#postgame-info {
+    display: none;
+}
+
 #end-turn-button {
     position: fixed;
     top:0em;

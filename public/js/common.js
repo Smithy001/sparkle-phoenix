@@ -19,7 +19,13 @@ function connect(callback) {
       ws.close();
     }
 
-    ws = new WebSocket(`wss://${location.host}`);
+    let wsProtocol = 'ws';
+    // Connect securely if on https
+    if (window.location.protocol == "https:") {
+        wsProtocol = 'wss';
+     }
+
+    ws = new WebSocket(`${wsProtocol}://${location.host}`);
     ws.onerror = function () {
       showMessage('WebSocket error');
     };
@@ -70,19 +76,61 @@ function colorImage(image,color, maskImage) {
     return image;
 }
 
+function isFragmentPresent(fragmentName) {
+    // Get the URL fragment
+    var fragment = window.location.hash;
+
+    // Remove the '#' at the beginning of the fragment
+    if (fragment.startsWith('#')) {
+        fragment = fragment.slice(1);
+    }
+
+    // Check if the URL fragment matches the given fragment name
+    return fragment === fragmentName;
+}
+
 window.onbeforeunload = function (e) {
   ws.close();
 };
 
-var testStatusUpdate = `
+function getObserverTestData(scenario) {
+  let testData = JSON.parse(testObserverUpdate);
+
+  switch (scenario) {
+    case 'end-game': 
+      // Set all but one player as not alive
+      testData.players[0].alive = true;
+      for (let i = 1; i<testData.players.length; i++) {
+        testData.players[i].alive = false;
+      }
+      break;
+  }
+  return testData;
+}
+
+function getPlayerTestData(scenario) {
+  let testData = JSON.parse(testPlayerUpdate);
+
+  switch (scenario) {
+    case 'dead':
+      testData.alive = false;
+    
+    case 'winner':
+      testData.winner = true;
+  }
+
+  return testData
+}
+
+var testObserverUpdate = `
 {
     "width": 20,
     "height": 20,
     "players": [
-{"id": "abcd1", "color": "red"},
-{"id": "ef431", "color": "blue"},
-{"id": "123ef", "color": "green"},
-{"id": "adcb9", "color": "brown"}
+{"id": "abcd1", "color": "red", "alive": true},
+{"id": "ef431", "color": "blue", "alive": true},
+{"id": "123ef", "color": "green", "alive": true},
+{"id": "adcb9", "color": "brown", "alive": true}
 ],
 "items": [
 {"id": "abcd1", "col": 1, "row": 1, "dir": 4},
@@ -93,6 +141,15 @@ var testStatusUpdate = `
 {"id": "bullet", "col": 12, "row": 15, "dir": 5},
 {"id": "bullet", "col": 15, "row": 5, "dir": 2},
 {"id": "explosion", "col": 9, "row": 15, "dir": 6}
+],
+"messages":[
+  "Game started",
+  "Explosion at 3, 5",
+  "Red player eliminated"
 ]
 }
+`;
+
+var testPlayerUpdate = `
+{ "alive":true, "color":"red" }
 `;

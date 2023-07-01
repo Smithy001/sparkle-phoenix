@@ -3,6 +3,7 @@ body {
   overflow-x: hidden;
   height: 100%;
   margin: 0;
+  padding: 0;
   overflow: hidden;
   touch-action: none;
 }
@@ -21,4 +22,24 @@ body {
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
+  
+}
+
+#game-title {
+  font-size: 1em;
+  font-weight: bold;
+  z-index: 1;
+}
+
+.messages-container {
+  position: fixed;
+  display: none;
+  margin: 0;
+  padding: 2em;
+  left:0em;
+  top: 0em;
+  width: 0em;
+  height: 0em;
+  overflow-x:hidden; 
+  overflow-y:auto;
 }

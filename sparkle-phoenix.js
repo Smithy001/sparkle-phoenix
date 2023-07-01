@@ -27,7 +27,6 @@ if (helpMode) {
 if (simMode) {
   var wsManager = new WSManager();
   var httpServer = new HttpServer(80, wsManager);
-  console.log(playerCount);
   var sim = new Sim(simModeTickSpeed);
 
   httpServer.startServer();
