@@ -2,6 +2,7 @@ const MapEntity = require("./mapEntity");
 const Player = require("./player");
 const ShipType = 'ship';
 const BulletType = 'bullet';
+const ExplosionType = 'explosion';
 
 class Game {
   constructor(pushStateCallbackParameter) {
@@ -292,7 +293,7 @@ class Game {
     this.everythingMovesAndShoots();
 
     //Decide on explosions and/or add shrapnels
-    this.determineWhatExplodesAndAddShrapnel();
+    this.determineWhatExplodesAndAddExplosions();
 
     for (let i = 0; i < this.players.length; i++) {
       const player = this.players[i];
@@ -416,8 +417,12 @@ class Game {
     }
   }
 
+  addExplosionShrapnel(explosion) {
+    
+  }
+
   //shrapnelHasBeenAdded
-  determineWhatExplodesAndAddShrapnel() {
+  determineWhatExplodesAndAddExplosions() {
     const needsShrapnel = [];
 
     for (let x = 0; x < this.boardSize; x++) {
@@ -442,12 +447,15 @@ class Game {
         if (cellExplodes) {
           this.addMessage(`Explosion at ${x}, ${y}`);
           this.killEverythingInCell(cell);
-          this.addShrapnelForExplosion(x, y, needsShrapnel);
+          const explosion = new MapEntity(x, y, ExplosionType, -1);
+          this.entities.push(explosion);
+          cell.entities.push(explosion);
+          //this.addShrapnelForExplosion(x, y, needsShrapnel);
         }
       }
     }
 
-    for (let i = 0; i < needsShrapnel.length; i++) {
+    /*for (let i = 0; i < needsShrapnel.length; i++) {
       //everything in each of these cells goes away and instead a single bullet is placed
       const shrapnelCell = needsShrapnel[i];
       const explodingCell = this.board[shrapnelCell.x][shrapnelCell.y];
@@ -455,7 +463,7 @@ class Game {
 
       const shrapnel = new MapEntity(shrapnelCell.x, shrapnelCell.y, 'shrapnel', shrapnelCell.direction);
       explodingCell.entities.push(shrapnel);
-    }
+    }*/
   }
 
   killEverythingInCell(explodingCell) {
@@ -558,11 +566,11 @@ class Game {
         state.items.push({ id: entity.owner.id, col: entity.x, row: entity.y, dir: entity.moveDirection });
       }
       else {
-        state.items.push({ id: BulletType, col: entity.x, row: entity.y, dir: entity.moveDirection });
+        state.items.push({ id: entity.type, col: entity.x, row: entity.y, dir: entity.moveDirection });
       }
     }
 
-    for (let i = 0; i < this.messages; i++) {
+    for (let i = 0; i < this.messages.length; i++) {
       const message = this.messages[i];
 
       state.messages.push(message);
