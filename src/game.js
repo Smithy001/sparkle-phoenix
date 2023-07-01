@@ -6,7 +6,7 @@ const ExplosionType = 'explosion';
 const ShrapnelType = 'shrapnel';
 
 class Game {
-  constructor(pushStateCallbackParameter, shrapenlIsOn) {
+  constructor(pushStateCallbackParameter, noShrapnel) {
     this.expectedPlayers = 0;
     this.boardSize = 0;
     this.players = [];
@@ -14,7 +14,7 @@ class Game {
     this.explosions = [];
     this.pushStateCallback = pushStateCallbackParameter;
     this.messages = [];
-    this.shrapenlIsOn = shrapenlIsOn;
+    this.shrapenlIsOn = !noShrapnel;
   }
 
   newGame(expectedPlayers) {
@@ -549,9 +549,6 @@ class Game {
       
       if (entity.type == ShipType) {
         state.items.push({ id: entity.owner.id, col: entity.x, row: entity.y, dir: entity.moveDirection });
-      }
-      else if (entity.type == ShrapnelType) {
-        state.items.push({ id: BulletType, col: entity.x, row: entity.y, dir: entity.moveDirection });
       }
       else {
         state.items.push({ id: entity.type, col: entity.x, row: entity.y, dir: entity.moveDirection });
