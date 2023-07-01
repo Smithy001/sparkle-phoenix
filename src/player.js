@@ -5,6 +5,7 @@ class Player {
       this.color = "";
       this.alive = true;
       this.turnHasBeenSubmitted = false;
+      this.winner;
     }
   }
   
