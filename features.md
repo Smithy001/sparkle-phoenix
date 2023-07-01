@@ -7,6 +7,8 @@ Sam:
 * Support multiple observers **DONE**
 * Fix explosion transparency **DONE**
 * Fix player edge collisions **DONE**
+* Add shrapnel on observer **DONE**
+* Add update observers with final game state
 
 Caleb:
 * Register Explosions (id: explosion) first, before spawning shrapnal the following turn 
