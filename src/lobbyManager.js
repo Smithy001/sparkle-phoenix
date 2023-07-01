@@ -1,14 +1,16 @@
-const Lobby = import('./lobby');
+const Lobby = require('./lobby');
+
+var lobbies = {};
 
 class LobbyManager {
-    constructor(host, qrCodeGenerator) {
-        this.lobbies = {};
-        this.url = host + '/lobby/';
+    constructor(host, qrCodeGenerator, httpServer) {
+        this.url = appendSlashIfMissing(host) + 'lobby/';
         this.qrCodeGenerator = qrCodeGenerator;
+        this.httpServer = httpServer;
     }
 
     getLobby(lobbyId) {
-        return this.lobbies[lobbyId];
+        return lobbies[lobbyId];
     }
 
     openLobby() {
@@ -18,9 +20,9 @@ class LobbyManager {
         while (!unique) {
           lobbyId = generateCode();
           
-          if (!this.lobbies.hasOwnProperty(lobbyId)) {
+          if (!lobbies.hasOwnProperty(lobbyId)) {
             unique = true;
-            this.lobbies[lobbyId] = createLobby(this.url + lobbyId);
+            lobbies[lobbyId] = createLobby(this.qrCodeGenerator, this.url + lobbyId);
             console.log("New unique code generated and added: ", lobbyId);
             return lobbyId;
           } else {
@@ -30,8 +32,15 @@ class LobbyManager {
     }
 
     closeLobby(lobbyId) {
-        delete(this.lobbies[lobbyId])
+        delete(lobbies[lobbyId]);
     }
+}
+
+function appendSlashIfMissing(str) {
+  if (str.charAt(str.length - 1) !== '/') {
+    return str + '/';
+  }
+  return str;
 }
 
 function generateCode() {
@@ -45,12 +54,14 @@ function generateCode() {
   return code;
 }
 
-function createLobby(url) {
+function createLobby(qrCodeGenerator, url) {
+  console.log(url);
   var lobby = new Lobby();
 
-  QRCode.toDataURL(url, { version: 2 }, function (err, data) {
-    lobby.qrCode = data;
+  qrCodeGenerator.toDataURL(url, { version: 2 }, function (err, data) {
     console.log(`Generated qr code for ${url}`);
+    lobby.qrCode = data;
+    lobby.ready = true;
   });
 
   return lobby;

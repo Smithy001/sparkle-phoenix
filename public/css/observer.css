@@ -31,6 +31,10 @@ body {
   z-index: 1;
 }
 
+#lobby-code {
+  width: 50%;
+  height: 50%;
+}
 .messages-container {
   position: fixed;
   display: none;
