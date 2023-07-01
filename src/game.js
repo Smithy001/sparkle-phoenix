@@ -3,23 +3,24 @@ const Player = require("./player");
 const ShipType = 'ship';
 const BulletType = 'bullet';
 const ExplosionType = 'explosion';
+const ShrapnelType = 'shrapnel';
 
 class Game {
-  constructor(pushStateCallbackParameter) {
+  constructor(pushStateCallbackParameter, shrapenlIsOn) {
     this.expectedPlayers = 0;
     this.boardSize = 0;
-    this.board = null;
     this.players = [];
     this.entities = [];
+    this.explosions = [];
     this.pushStateCallback = pushStateCallbackParameter;
     this.messages = [];
+    this.shrapenlIsOn = shrapenlIsOn;
   }
 
   newGame(expectedPlayers) {
     console.log(`Starting new Game with ${expectedPlayers} players`);
     this.expectedPlayers = expectedPlayers;
     this.boardSize = this.determineBoardSize();
-    this.board = this.createBoard();
     this.acceptingNewPlayers = true;
     this.gameStarted = false;
   }
@@ -30,21 +31,6 @@ class Game {
     const bestBoardSize = Math.floor(Math.sqrt(boardSpacesForPlayerCount));
 
     return bestBoardSize;
-  }
-
-  createBoard() {
-    const boardSpaces = this.boardSize * this.boardSize;
-    console.log(`Creating board of ${this.boardSize} by ${this.boardSize} with ${boardSpaces} spaces.`);
-    const board = [];
-    for (let x = 0; x < this.boardSize; x++) {
-      const cellArray = [];
-      for (let y = 0; y < this.boardSize; y++) {
-        cellArray.push({ entities: [], shrapnelHasBeenAdded: false });
-      }
-      board.push(cellArray);
-    }
-
-    return board;
   }
 
   playerJoin(playerId) {
@@ -92,7 +78,6 @@ class Game {
       console.log(player.ship);
       //console.log(`Placed a ship (${player.ship}) for ${player.id} at ${player.ship.x},${player.ship.y} facing ${player.ship.direction}`);
   
-      this.board[xy.x][xy.y].entities.push(player.ship);
       this.entities.push(player.ship);
     }
 
@@ -153,12 +138,7 @@ class Game {
 
     //console.log(`value at ${x},${y} is ${value}; center(${valueFromDistanceFromCenter}), distance(${valueFromPlayerDistances}), random(${randomValue})`);
 
-    if (this.board[x][y].entities.length > 0) {
-      return -1000;
-    }
-    else {
-      return value;
-    }
+    return value;
   }
 
   getRandomValue() {
@@ -167,37 +147,6 @@ class Game {
 
     return normalizedRng;
   }
-/*
-  getValueFromPlayerDistances(x, y) {
-    var totalPlayerDistancePercentages = 0;
-    const centerCoordinate = Math.floor(this.boardSize / 2);
-    const maxPossibleDistance = this.getDistance(0, 0, centerCoordinate, centerCoordinate);
-    var proximityEffect = 0;
-    const proximityDistance = Math.floor(centerCoordinate / 1.5);
-
-    for (let i = 0; i < this.entities.length; i++) {
-      const otherShip = this.entities[i];
-      const distanceToOtherShip = this.getDistance(x, y, otherShip.x, otherShip.y);
-      const distancePct = distanceToOtherShip / maxPossibleDistance;
-
-      if (distanceToOtherShip <= proximityDistance) {
-        proximityEffect -= proximityDistance - distanceToOtherShip;
-      }
-
-      totalPlayerDistancePercentages += distancePct;
-    }
-
-    console.log(`${x},${y} proximity effect: ${proximityEffect}`);
-
-    if (this.entities.length > 0) {
-      const playerDistanceEffect = totalPlayerDistancePercentages / this.entities.length;
-      return playerDistanceEffect + proximityDistance;
-    }
-    else {
-      return 0;
-    }
-  }
-*/
 
   getValueFromPlayerDistances(x, y) {
     var lowestDistancePct = 1;
@@ -209,7 +158,10 @@ class Game {
       const distanceToOtherShip = this.getDistance(x, y, otherShip.x, otherShip.y);
       const distancePct = distanceToOtherShip / maxPossibleDistance;
 
-      if (distancePct < lowestDistancePct) {
+      if (distanceToOtherShip < 2) {
+        lowestDistancePct = -100000;
+      }
+      else if (distancePct < lowestDistancePct) {
         lowestDistancePct = distancePct;
       }
     }
@@ -308,26 +260,38 @@ class Game {
   everythingMovesAndShoots() {
     for (let i = 0; i < this.entities.length; i++) {
       const entity = this.entities[i];
-      var newLocation = this.getNewLocationFromDirection(entity.x, entity.y, entity.moveDirection);
-      var newLocationIsOnTheMap = this.validXY(newLocation.x, newLocation.y);
 
-      if (newLocationIsOnTheMap) {
-        this.moveOneEntity(entity, newLocation);
-      }
-      else {
-        if (entity.type == 'ship') {
-          while(!newLocationIsOnTheMap) {
-            entity.moveDirection = this.rotateMoveDirection(entity.moveDirection);
-            newLocation = this.getNewLocationFromDirection(entity.x, entity.y, entity.moveDirection);
-            var newLocationIsOnTheMap = this.validXY(newLocation.x, newLocation.y);
-          }
-          
+        var newLocation = this.getNewLocationFromDirection(entity.x, entity.y, entity.moveDirection);
+        var newLocationIsOnTheMap = this.validXY(newLocation.x, newLocation.y);
+  
+        if (newLocationIsOnTheMap) {
           this.moveOneEntity(entity, newLocation);
-        } else {
-          entity.needsToExplode = true;
         }
+        /*else {
+          if (entity.type == ShipType) {
+            while(!newLocationIsOnTheMap) {
+              entity.moveDirection = this.rotateMoveDirection(entity.moveDirection);
+              newLocation = this.getNewLocationFromDirection(entity.x, entity.y, entity.moveDirection);
+              var newLocationIsOnTheMap = this.validXY(newLocation.x, newLocation.y);
+            }
+            
+            this.moveOneEntity(entity, newLocation);
+          } else {
+            entity.needsToExplode = true;
+          }
+        }*/
+      }
+
+    for (let i = 0; i < this.explosions.length; i++) {
+      const explosion = this.explosions[i];
+
+      //Add shrapnel for this one explosion!!!!!
+      if (this.shrapenlIsOn) {
+        this.addShrapnelForExplosion(explosion.x, explosion.y);
       }
     }
+
+    this.explosions = [];
 
     for (let i = 0; i < this.players.length; i++) {
       const player = this.players[i];
@@ -335,6 +299,18 @@ class Game {
       if (player.alive) {
         const ship = player.ship;
         this.shootBullet(ship);
+      }
+    }
+  }
+
+  addShrapnelForExplosion(x, y) {
+    for (let direction = 0; direction <= 7; direction++) {
+      const newLocation = this.getNewLocationFromDirection(x, y, direction);
+      
+      if (this.validXY(newLocation.x, newLocation.y)) {
+        const bullet = new MapEntity(newLocation.x, newLocation.y, ShrapnelType, direction, null, null);
+      
+        this.entities.push(bullet);
       }
     }
   }
@@ -385,20 +361,8 @@ class Game {
   }
 
   moveOneEntity (entity, newLocation) {
-    //console.log(entity);
-    const cell = this.board[entity.x][entity.y];
-    //console.log(cell);
-    const index = cell.entities.indexOf(entity);
-
-    if (index > -1) {
-      cell.entities.splice(index, 1);
-    }
-
     entity.x = newLocation.x;
     entity.y = newLocation.y;
-
-    const newCell = this.board[entity.x][entity.y];
-    newCell.entities.push(entity);
   }
 
   shootBullet(entity) {
@@ -406,64 +370,95 @@ class Game {
     const xyIsValid = this.validXY(locationOfBullet.x, locationOfBullet.y);
 
     if (xyIsValid) {
-      console.log(`adding bullet to ${locationOfBullet.x}, ${locationOfBullet.y}.`);
+      //console.log(`adding bullet to ${locationOfBullet.x}, ${locationOfBullet.y}.`);
       const bullet = new MapEntity(locationOfBullet.x, locationOfBullet.y, BulletType, entity.shootDirection, null, null);
       
-      this.board[locationOfBullet.x][locationOfBullet.y].entities.push(bullet);
       this.entities.push(bullet);
     }
     else {
-      console.log(`cannot add bullet to ${locationOfBullet.x}, ${locationOfBullet.y}, nothing is done instead.`);
+      //console.log(`cannot add bullet to ${locationOfBullet.x}, ${locationOfBullet.y}, nothing is done instead.`);
     }
-  }
-
-  addExplosionShrapnel(explosion) {
-    
   }
 
   //shrapnelHasBeenAdded
   determineWhatExplodesAndAddExplosions() {
     const needsShrapnel = [];
 
-    for (let x = 0; x < this.boardSize; x++) {
-      for (let y = 0; y < this.boardSize; y++) {
-        const cell = this.board[x][y];
-        var cellExplodes = false;
+    for (let i = 0; i < this.entities.length; i++) {
+      const entity = this.entities[i];
+
+      if (!entity.needsToExplode) {
+        const entitiesSharingMySpace = [];
+        this.getAnyEntitySharingMySpace(entity, entitiesSharingMySpace);
+
+        if (entitiesSharingMySpace.length > 0) {
+          entity.needsToExplode = true;
+
+          entitiesSharingMySpace.forEach(function(item) {
+            item.needsToExplode = true;
+          });
+        }
+
         
-        if (cell.entities.length > 1) {
-          cellExplodes = true;
-        }
+      }
+    }
 
-        if (!cellExplodes) {
-          for (let i = 0; i < cell.entities.length; i++) {
-            const entity = cell.entities[i];
-  
-            if (entity.needsToExplode) {
-              cellExplodes = true;
-            }
+    const entitiesThatNeedToBeRemoved = [];
+
+    for (let i = 0; i < this.entities.length; i++) {
+      const entity = this.entities[i];
+
+      if (entity.needsToExplode) {
+        entitiesThatNeedToBeRemoved.push(entity);
+
+        if (entity.type != ShrapnelType) {
+          const explosion = this.findExplosion(entity.x, entity.y);
+          
+
+          if (explosion == null) {
+            const x = entity.x;
+            const y = entity.y;
+
+            this.addMessage(`Explosion at ${x}, ${y}`);
+            const explosion = new MapEntity(x, y, ExplosionType, -1);
+            this.explosions.push(explosion);
           }
-        }
-
-        if (cellExplodes) {
-          this.addMessage(`Explosion at ${x}, ${y}`);
-          this.killEverythingInCell(cell);
-          const explosion = new MapEntity(x, y, ExplosionType, -1);
-          this.entities.push(explosion);
-          cell.entities.push(explosion);
-          //this.addShrapnelForExplosion(x, y, needsShrapnel);
         }
       }
     }
 
-    /*for (let i = 0; i < needsShrapnel.length; i++) {
-      //everything in each of these cells goes away and instead a single bullet is placed
-      const shrapnelCell = needsShrapnel[i];
-      const explodingCell = this.board[shrapnelCell.x][shrapnelCell.y];
-      this.killEverythingInCell(explodingCell);
+    for (let i = 0; i < entitiesThatNeedToBeRemoved.length; i++) {
+      const entity = entitiesThatNeedToBeRemoved[i];
+      const index = this.entities.indexOf(entity);
+      
+      if (entity.type == ShipType) {
+        entity.owner.alive = false;
+      }
 
-      const shrapnel = new MapEntity(shrapnelCell.x, shrapnelCell.y, 'shrapnel', shrapnelCell.direction);
-      explodingCell.entities.push(shrapnel);
-    }*/
+      this.entities.splice(index, 1);
+    }
+  }
+
+  findExplosion(x, y) {
+    for (let i = 0; i < this.explosions.length; i++) {
+      const explosion = this.explosions[i];
+
+      if (explosion.x == x && explosion.y == y) {
+        return explosion;
+      }
+    }
+
+    return null;
+  }
+
+  getAnyEntitySharingMySpace(entity, entitiesSharingMySpace) {
+    for (let i = 0; i < this.entities.length; i++) {
+      const otherEntity = this.entities[i];
+      
+      if (otherEntity != entity && otherEntity.x == entity.x && otherEntity.y == entity.y) {
+        entitiesSharingMySpace.push(otherEntity);
+      }
+    }
   }
 
   killEverythingInCell(explodingCell) {
@@ -486,7 +481,7 @@ class Game {
   }
 
   killPlayer(player) {
-    this.addMessage(`Player ${player.id} has died`);
+    this.addMessage(`${player.color} player has died`);
     player.alive = false;
     player.turnHasBeenSubmitted = true;
     player.ship = null;
@@ -495,16 +490,6 @@ class Game {
   addMessage(message) {
     this.messages.push(message);
     console.log(`MESSAGE: ${message}`);
-  }
-
-  addShrapnelForExplosion(x, y, needsShrapnel) {
-    for (let direction = 0; direction <= 7; direction++) {
-      const newLocation = this.getNewLocationFromDirection(x, y, direction);
-      
-      if (this.validXY(newLocation.x, newLocation.y)) {
-        needsShrapnel.push( { x: newLocation.x, y: newLocation.y, direction: direction});
-      }
-    }
   }
 
   validXY(x, y) {
@@ -565,9 +550,18 @@ class Game {
       if (entity.type == ShipType) {
         state.items.push({ id: entity.owner.id, col: entity.x, row: entity.y, dir: entity.moveDirection });
       }
+      else if (entity.type == ShrapnelType) {
+        state.items.push({ id: BulletType, col: entity.x, row: entity.y, dir: entity.moveDirection });
+      }
       else {
         state.items.push({ id: entity.type, col: entity.x, row: entity.y, dir: entity.moveDirection });
       }
+    }
+
+    for (let i = 0; i < this.explosions.length; i++) {
+      const explosion = this.explosions[i];
+      
+      state.items.push({ id: ExplosionType, col: explosion.x, row: explosion.y, dir: explosion.moveDirection });
     }
 
     for (let i = 0; i < this.messages.length; i++) {
