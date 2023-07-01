@@ -75,6 +75,14 @@ function loadImageExplosion() {
     explosionImage = new Image();
     explosionImage.src = '../img/explosion.png';
     explosionImage.onload = function () {
+        loadImageShrapnel();
+    };
+}
+
+function loadImageShrapnel() {
+    shrapnelImage = new Image();
+    shrapnelImage.src = '../img/shrapnel.png';
+    shrapnelImage.onload = function () {
         ready = true;
         if (isFragmentPresent('sim')) {
             handleStatusUpdate(getObserverTestData('end-game'));
@@ -113,6 +121,8 @@ function drawGridItems(canvas, context, cellSize, xOffset, yOffset, borderSize) 
             drawImage(context, bulletImage, x, y, cellSize, item.dir*45, borderSize);
         } else if (item.id == 'explosion') {
             drawImage(context, explosionImage, x, y, cellSize, item.dir*45, borderSize);
+        } else if (item.id == 'shrapnel') {
+            drawImage(context, shrapnelImage, x, y, cellSize, item.dir*45, borderSize);
         } else {
             if (players[item.id]) {
                 drawImage(context, players[item.id], x, y, cellSize, item.dir*45, borderSize);

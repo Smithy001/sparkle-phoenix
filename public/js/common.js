@@ -140,6 +140,7 @@ var testObserverUpdate = `
 {"id": "bullet", "col": 8, "row": 5, "dir": 7},
 {"id": "bullet", "col": 12, "row": 15, "dir": 5},
 {"id": "bullet", "col": 15, "row": 5, "dir": 2},
+{"id": "shrapnel", "col": 10, "row": 12, "dir": 4},
 {"id": "explosion", "col": 9, "row": 15, "dir": 6}
 ],
 "messages":[
