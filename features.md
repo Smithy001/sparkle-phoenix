@@ -3,7 +3,7 @@ MVP v1.0 features:
 Sam:
 * Add simulator observer mode (waits for observer to join) **DONE**
 * Player interface updates to display if you've eliminated **DONE**
-* Messages list implemented on observers
+* Messages list implemented on observers **DONE**
 * Support multiple observers **DONE**
 * Fix explosion transparency **DONE**
 * Fix player edge collisions **DONE**
