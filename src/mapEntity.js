@@ -11,6 +11,7 @@ class MapEntity {
         this.owner = owner;
         this.color = color;
         this.needsToExplode = false;
+        this.needsToBeRemoved = false;
     }
 }
 
