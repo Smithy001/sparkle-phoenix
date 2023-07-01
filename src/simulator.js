@@ -51,8 +51,6 @@ class Simulator {
 
         if (Object.keys(players).length < 2) {
             console.log('Game over');
-            clearInterval(eventLoop);
-            process.exit();
         }
 
         console.log('### End processing state ###');

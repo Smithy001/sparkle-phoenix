@@ -10,7 +10,7 @@ const observerMode = Common.getArgument('observe', false);
 const playerCount = Common.getArgument('players', 2);
 const simModeTickSpeed = Common.getArgument('tick', 2000);
 const helpMode = Common.getArgument('help', false);
-const shrapnelMode = Common.getArgument('no_shrapnel', false);
+const shrapnelMode = Common.getArgument('no-shrapnel', false);
 
 if (helpMode) {
   console.log(`
@@ -21,7 +21,7 @@ if (helpMode) {
   -sim                  Simulation mode
   -observe              Wait for an observer to join before starting Simulation mode
   -tick [number]        Milliseconds to wait between each making each move during Simulation mode
-  -no_shrapnel          Removes shrapnel from explosions
+  -no-shrapnel          Removes shrapnel from explosions
   `);
   process.exit();
 }
@@ -41,7 +41,7 @@ if (simMode) {
     if (id == 'observer') {
       wsManager.sendMessage(id, state);
     }
-  }, shrapnelMode);
+  }, function(){process.exit()}, shrapnelMode);
 
   if (observerMode) {
     console.log('Simulation Observer mode, waiting for observer to join...');
@@ -64,7 +64,7 @@ if (simMode) {
     console.log(`Callback = ID: ${id}`);
     console.log(state);
     wsManager.sendMessage(id, state);
-  }, shrapnelMode);
+  }, function(){process.exit()}, shrapnelMode);
 
   wsManager.addFunction('playerJoin', function(id) {
     console.log('Adding player');

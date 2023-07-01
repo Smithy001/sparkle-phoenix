@@ -8,20 +8,21 @@ Sam:
 * Fix explosion transparency **DONE**
 * Fix player edge collisions **DONE**
 * Add shrapnel on observer **DONE**
-* Add update observers with final game state
-* Fix using dashes in argument names
-* Add end-game callback
+* Add update observers with final game state **DONE**
+* Fix using dashes in argument names **DONE**
+* Add end-game callback **DONE**
+* Send "winner": true in player update, when a player wins **DONE**
+* Observer interface updates to display who wins **DONE**
 
 Caleb:
 * Register Explosions (id: explosion) first, before spawning shrapnal the following turn **DONE**
 * Fix issues with players disappearing **DONE**
 * Send new messages for the turn in observer status **DONE**
 * Include player color instead of player id in messages **DONE**
-* Send "winner": true in player update, when a player wins 
 
 
 MVP v2.0 features:
 
-* Observer interface updates to display who wins 
+
 * Animate observers
 
