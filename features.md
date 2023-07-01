@@ -9,6 +9,7 @@ Sam:
 * Fix player edge collisions **DONE**
 * Add shrapnel on observer **DONE**
 * Add update observers with final game state
+* Fix using dashes in argument names
 
 Caleb:
 * Register Explosions (id: explosion) first, before spawning shrapnal the following turn 
