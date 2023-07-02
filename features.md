@@ -14,7 +14,7 @@ Sam:
 * Send "winner": true in player update, when a player wins **DONE**
 * Observer interface updates to display who wins **DONE**
 * Web socket keep alive
-* support changing colors
+* support changing colors **DONE**
 * Add support for ai players **DONE**
 
 Caleb:
