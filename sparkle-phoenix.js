@@ -30,7 +30,7 @@ if (helpMode) {
 if (simMode) {
   var wsManager = new WSManager();
   var httpServer = new HttpServer(80, wsManager);
-  var sim = new Sim(simModeTickSpeed, AiPlayer);
+  var sim = new Sim(simModeTickSpeed, new AiPlayer());
 
   httpServer.startServer();
 
