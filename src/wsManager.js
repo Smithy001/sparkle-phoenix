@@ -63,11 +63,7 @@ class WSManager {
       
         ws.on('message', function(message) {
             console.log(`Received message ${message} from user ${userId}`);
-
             let jsonMessage = JSON.parse(message);
-            console.log(functions);
-            console.log(jsonMessage);
-            console.log(functions.has(jsonMessage.type));
             if (jsonMessage && jsonMessage.type && functions.has(jsonMessage.type)) {
                 console.log('Calling callback');
                 jsonMessage.playerId = userId;
