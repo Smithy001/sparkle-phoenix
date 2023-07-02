@@ -13,8 +13,13 @@ Sam:
 * Add end-game callback **DONE**
 * Send "winner": true in player update, when a player wins **DONE**
 * Observer interface updates to display who wins **DONE**
+* Web socket keep alive
+* support changing colors
+* Add support for ai players
 
 Caleb:
+* Improve AI
+* fix duplicate color **DONE**
 * Register Explosions (id: explosion) first, before spawning shrapnal the following turn **DONE**
 * Fix issues with players disappearing **DONE**
 * Send new messages for the turn in observer status **DONE**
