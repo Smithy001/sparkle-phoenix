@@ -13,9 +13,9 @@ Sam:
 * Add end-game callback **DONE**
 * Send "winner": true in player update, when a player wins **DONE**
 * Observer interface updates to display who wins **DONE**
-* Web socket keep alive
-* support changing colors
-* Add support for ai players
+* Web socket keep alive **DONE**
+* support changing colors **DONE**
+* Add support for ai players **DONE**
 
 Caleb:
 * Improve AI
@@ -28,6 +28,6 @@ Caleb:
 
 MVP v2.0 features:
 
-
+* Lobby manager
 * Animate observers
 
