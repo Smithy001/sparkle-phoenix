@@ -6,13 +6,14 @@ const ExplosionType = 'explosion';
 const ShrapnelType = 'shrapnel';
 
 class Game {
-  constructor(pushStateCallbackParameter, noShrapnel) {
+  constructor(pushStateCallbackParameter, endGameCallbackParameter, noShrapnel) {
     this.expectedPlayers = 0;
     this.boardSize = 0;
     this.players = [];
     this.entities = [];
     this.explosions = [];
     this.pushStateCallback = pushStateCallbackParameter;
+    this.endGameCallback = endGameCallbackParameter;
     this.messages = [];
     this.shrapenlIsOn = !noShrapnel;
     this.gameOver = false;
@@ -276,12 +277,19 @@ class Game {
 
     if (alivePlayers.length == 0) {
       this.gameOver = true;
+      this.addMessage(`Game over. Draw game.`);
     }
     else if (alivePlayers.length == 1) {
+      this.gameOver = true;
       alivePlayers[0].winner = true;
+      this.addMessage(`Game over. ${alivePlayers[0].color} player is the winner!`);
     }
 
     this.pushStateToAll();
+
+    if (this.gameOver == true) {
+      this.endGameCallback();
+    }
   }
 
   everythingMovesAndShoots() {
@@ -533,7 +541,7 @@ class Game {
   }
 
   getStateForOnePlayer(player) {
-    const state = { alive:player.alive, color:player.color };
+    const state = { alive:player.alive, color:player.color, winner: player.winner};
 
     return state;
   }
