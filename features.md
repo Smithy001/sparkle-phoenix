@@ -15,7 +15,7 @@ Sam:
 * Observer interface updates to display who wins **DONE**
 * Web socket keep alive
 * support changing colors
-* Add support for ai players
+* Add support for ai players **DONE**
 
 Caleb:
 * Improve AI
