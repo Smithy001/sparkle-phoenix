@@ -28,7 +28,16 @@ class Game {
   }
 
   determineBoardSize() {
-    const boardSpacesForPlayerCount = this.expectedPlayers * 25;
+    var spacesPerPlayer = 0;
+
+    if (this.shrapenlIsOn) {
+      spacesPerPlayer = 35;
+    }
+    else {
+      spacesPerPlayer = 25;
+    }
+
+    const boardSpacesForPlayerCount = this.expectedPlayers * spacesPerPlayer;
     console.log(`Target board spaces is ${boardSpacesForPlayerCount}`);
     const bestBoardSize = Math.floor(Math.sqrt(boardSpacesForPlayerCount));
 
@@ -39,19 +48,26 @@ class Game {
     console.log(`player with id of ${playerId} is attempting to join`);
     if (!this.gameStarted)
     {
-      const player = new Player(playerId);
-      this.players.push(player);
+      var player = this.findPlayer(player);
+      
+      if (player == null) {
+        player = new Player(playerId);
+        this.players.push(player);
 
-      console.log(`game has not started, allowing ${playerId} to join. We now have ${this.players.length} players.`);
+        console.log(`game has not started, allowing ${playerId} to join. We now have ${this.players.length} players.`);
 
-      if (this.players.length >= this.expectedPlayers) {
-        console.log(`We have reached expected player count, starting game.`);
-        this.gameStarted = true;
-        this.startGame();
+        if (this.players.length >= this.expectedPlayers) {
+          console.log(`We have reached expected player count, starting game.`);
+          this.gameStarted = true;
+          this.startGame();
+        }
+      }
+      else {
+        console.log(`player with id of ${playerId} already exists, not adding them back`);
       }
     } else {
       var player = this.findPlayer(playerId);
-      if (player && player.turnHasBeenSubmitted == false) {
+      if (player != null && player.turnHasBeenSubmitted == false) {
         this.pushStateToOnePlayer(player);
       }
     }
