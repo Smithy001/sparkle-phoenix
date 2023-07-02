@@ -5,6 +5,7 @@ const WSManager = require('./src/wsManager');
 const Game = require('./src/game');
 const Common = require('./src/common');
 const Sim = require('./src/simulator');
+const AiPlayer = require('./src/aiPlayer');
 const simMode = Common.getArgument('sim', false);
 const observerMode = Common.getArgument('observe', false);
 const playerCount = Common.getArgument('players', 2);
@@ -29,7 +30,7 @@ if (helpMode) {
 if (simMode) {
   var wsManager = new WSManager();
   var httpServer = new HttpServer(80, wsManager);
-  var sim = new Sim(simModeTickSpeed);
+  var sim = new Sim(simModeTickSpeed, AiPlayer);
 
   httpServer.startServer();
 

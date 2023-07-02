@@ -2,11 +2,13 @@ const uuid = require('uuid');
 var players = {};
 var theGame;
 var eventLoop;
+var AiPlayer;
 
 class Simulator {
-    constructor(tickSpeed) {
+    constructor(tickSpeed, AiPlayerClass) {
         console.log('Initializing simulation');
         this.interval = tickSpeed;
+        AiPlayer = AiPlayerClass;
     }
 
     startSim (game, playerCount) {
@@ -32,7 +34,8 @@ class Simulator {
 
         Object.keys(players).forEach(playerId => {
             console.log(`Processing player: ${playerId}`);
-            theGame.endTurn(playerId, determineBestMove(), determineBestMove());
+            var bestMove = AiPlayer.determineBestMove(theGame, playerId);
+            theGame.endTurn(playerId, bestMove[0], bestMove[1]);
         });
     }
 
@@ -56,14 +59,6 @@ class Simulator {
         console.log('### End processing state ###');
     }
 
-}
-
-function determineBestMove() {
-    return getRandomInt(7);
-}
-
-function getRandomInt(max) {
-    return Math.floor(Math.random() * max);
 }
 
 module.exports = Simulator;
