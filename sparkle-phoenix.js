@@ -58,7 +58,7 @@ if (simMode) {
 
   var httpServer = new HttpServer(80, wsManager);
 
-  httpServer.startServer();
+  
 
   var game = new Game(function(id, state) {
     console.log(`Callback = ID: ${id}`);
@@ -79,6 +79,8 @@ if (simMode) {
     }
   })
   
+  httpServer.startServer();
+
   game.newGame(playerCount);
 }
 

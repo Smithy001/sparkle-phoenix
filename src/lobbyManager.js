@@ -4,36 +4,51 @@ var lobbies = {};
 
 class LobbyManager {
     constructor(host, qrCodeGenerator, httpServer) {
-        this.url = appendSlashIfMissing(host) + 'lobby/';
-        this.qrCodeGenerator = qrCodeGenerator;
-        this.httpServer = httpServer;
+      this.url = appendSlashIfMissing(host) + 'lobby/';
+      this.qrCodeGenerator = qrCodeGenerator;
+      this.httpServer = httpServer;
+      console.log('Initializing LobbyManager');
+
+      setupHttpServer(this, httpServer);
     }
 
     getLobby(lobbyId) {
-        return lobbies[lobbyId];
+      return lobbies[lobbyId];
     }
 
-    openLobby() {
-        let unique = false;
-        let lobbyId;
-      
-        while (!unique) {
-          lobbyId = generateCode();
-          
-          if (!lobbies.hasOwnProperty(lobbyId)) {
-            unique = true;
-            lobbies[lobbyId] = createLobby(this.qrCodeGenerator, this.url + lobbyId);
-            console.log("New unique code generated and added: ", lobbyId);
-            return lobbyId;
-          } else {
-            console.log("Code already exists.");
-          }
+    openLobby(callback) {
+      let unique = false;
+      let lobbyId;
+    
+      while (!unique) {
+        lobbyId = generateCode();
+        
+        if (!lobbies.hasOwnProperty(lobbyId)) {
+          unique = true;
+          lobbies[lobbyId] = createLobby(this.qrCodeGenerator, this.url + lobbyId, callback);
+          console.log("New unique code generated and added: ", lobbyId);
+          return lobbyId;
+        } else {
+          console.log("Code already exists.");
         }
+      }
     }
 
     closeLobby(lobbyId) {
-        delete(lobbies[lobbyId]);
+      delete(lobbies[lobbyId]);
     }
+}
+
+function setupHttpServer(lobbyManager, httpServer) {
+  httpServer.express.get('/lobbies', (req, res) => {
+    var data = [];
+
+    Object.keys(lobbies).forEach(lobbyId => {
+      data.push(lobbyId);
+    });
+  
+    res.json(data);
+  });
 }
 
 function appendSlashIfMissing(str) {
@@ -54,7 +69,7 @@ function generateCode() {
   return code;
 }
 
-function createLobby(qrCodeGenerator, url) {
+function createLobby(qrCodeGenerator, url, callback) {
   console.log(url);
   var lobby = new Lobby();
 
@@ -62,6 +77,7 @@ function createLobby(qrCodeGenerator, url) {
     console.log(`Generated qr code for ${url}`);
     lobby.qrCode = data;
     lobby.ready = true;
+    //callback(data);
   });
 
   return lobby;
