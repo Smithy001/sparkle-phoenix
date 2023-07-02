@@ -42,6 +42,10 @@ function connect(callback) {
         console.log("Calling callback")
         callback(JSON.parse(event.data));
     }
+
+    setInterval(function(){
+      ws.send(JSON.stringify({message: "heartbeat"}));
+    }, 15000);
     callback({message:"ready"});
 }
 
