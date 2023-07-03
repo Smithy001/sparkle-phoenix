@@ -40,7 +40,7 @@ class LobbyManager {
 }
 
 function setupHttpServer(lobbyManager, httpServer) {
-  httpServer.express.get('/lobbies', (req, res) => {
+  httpServer.express.get('/games', (req, res) => {
     var data = [];
 
     Object.keys(lobbies).forEach(lobbyId => {
@@ -73,7 +73,8 @@ function createLobby(qrCodeGenerator, url, callback) {
   console.log(url);
   var lobby = new Lobby();
 
-  qrCodeGenerator.toDataURL(url, { version: 2 }, function (err, data) {
+  
+  qrCodeGenerator.toDataURL(url, function (err, data) {
     console.log(`Generated qr code for ${url}`);
     lobby.qrCode = data;
     lobby.ready = true;

@@ -43,29 +43,30 @@ var httpServer = new HttpServer(80, wsManager);
 var lobbyManager = new LobbyManager(address, QRCode, httpServer);
 
 var lobbyCode = lobbyManager.openLobby(function(lobby){
-    //console.log(lobby);
+    console.log(lobby);
 });
 
 var lobbyCode = lobbyManager.openLobby(function(lobby){
-    //console.log(lobby);
+    console.log(lobby);
 });
 
 var lobbyCode = lobbyManager.openLobby(function(lobby){
-    //console.log(lobby);
+    console.log(lobby);
 });
 
 var lobbyCode = lobbyManager.openLobby(function(lobby){
-    //console.log(lobby);
+    console.log(lobby);
 });
 
 var lobbyCode = lobbyManager.openLobby(function(lobby){
-    //console.log(lobby);
+    console.log(lobby);
 });
 
 var lobbyCode = lobbyManager.openLobby(function(lobby){
-    //console.log(lobby);
+    console.log(lobby);
 });
 
+/*
 setTimeout(function(){
     //console.log(lobbyCode);
     var lobby = lobbyManager.getLobby(lobbyCode);
@@ -73,7 +74,7 @@ setTimeout(function(){
     //lobbyManager.closeLobby(lobbyCode);
     console.log(lobbyManager.lobbies);
 }, 1000);
-
+*/
 
 /*
 

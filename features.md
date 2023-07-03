@@ -28,6 +28,14 @@ Caleb:
 
 MVP v2.0 features:
 
+Sam:
 * Lobby manager
+    * Game list backend
+    * Lobby front-end
 * Animate observers
+
+Caleb:
+* fix issue where multiple players can have the same color
+
+
 

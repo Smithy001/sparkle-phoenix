@@ -1,0 +1,17 @@
+#gameListContainer {
+    width:30em;
+}
+
+#gameList {
+    width:100%;
+    height:20em;
+}
+
+#gameListTitle {
+    font-weight: bold;
+    margin: 1em;
+}
+
+button {
+    margin: 1em;
+}
