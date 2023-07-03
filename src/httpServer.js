@@ -83,4 +83,18 @@ class HttpServer {
 
   }
   
+/*
+
+app.delete('/logout', function (request, response) {
+  const ws = map.get(request.session.userId);
+
+  console.log('Destroying session');
+  request.session.destroy(function () {
+    if (ws) ws.close();
+
+    response.send({ result: 'OK', message: 'Session destroyed' });
+  });
+});
+*/
+
   module.exports = HttpServer;
