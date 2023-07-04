@@ -1,10 +1,10 @@
-const Lobby = require('./lobby');
+const lobbyGame = require('./lobbyGame');
 
-var lobbies = {};
+var games = {};
 
 class LobbyManager {
     constructor(host, qrCodeGenerator, httpServer) {
-      this.url = appendSlashIfMissing(host) + 'lobby/';
+      this.url = appendSlashIfMissing(host) + 'game/';
       this.qrCodeGenerator = qrCodeGenerator;
       this.httpServer = httpServer;
       console.log('Initializing LobbyManager');
@@ -12,42 +12,46 @@ class LobbyManager {
       setupHttpServer(this, httpServer);
     }
 
-    getLobby(lobbyId) {
-      return lobbies[lobbyId];
+    getGame(gameId) {
+      return games[gameId];
     }
 
-    openLobby(callback) {
+    getGames() {
+      var retGames = [];
+
+      Object.keys(games).forEach(gameId => {
+        retGames.push(gameId);
+      });
+
+      return retGames;
+    }
+
+    newGame(callback) {
       let unique = false;
-      let lobbyId;
+      let gameId;
     
       while (!unique) {
-        lobbyId = generateCode();
+        gameId = generateCode();
         
-        if (!lobbies.hasOwnProperty(lobbyId)) {
+        if (!games.hasOwnProperty(gameId)) {
           unique = true;
-          lobbies[lobbyId] = createLobby(this.qrCodeGenerator, this.url + lobbyId, callback);
-          console.log("New unique code generated and added: ", lobbyId);
-          return lobbyId;
+          games[gameId] = createGame(this.qrCodeGenerator, this.url + gameId, callback);
+          console.log("New unique code generated and added: ", gameId);
+          return gameId;
         } else {
           console.log("Code already exists.");
         }
       }
     }
 
-    closeLobby(lobbyId) {
-      delete(lobbies[lobbyId]);
+    closeGame(gameId) {
+      delete(games[gameId]);
     }
 }
 
 function setupHttpServer(lobbyManager, httpServer) {
   httpServer.express.get('/games', (req, res) => {
-    var data = [];
-
-    Object.keys(lobbies).forEach(lobbyId => {
-      data.push(lobbyId);
-    });
-  
-    res.json(data);
+    res.json(lobbyManager.getGames());
   });
 }
 
@@ -69,19 +73,18 @@ function generateCode() {
   return code;
 }
 
-function createLobby(qrCodeGenerator, url, callback) {
+function createGame(qrCodeGenerator, url, callback) {
   console.log(url);
-  var lobby = new Lobby();
-
+  var game = new lobbyGame();
   
   qrCodeGenerator.toDataURL(url, function (err, data) {
     console.log(`Generated qr code for ${url}`);
-    lobby.qrCode = data;
-    lobby.ready = true;
-    //callback(data);
+    game.qrCode = data;
+    game.ready = true;
+    callback(data);
   });
 
-  return lobby;
+  return game;
 }
 
 module.exports = LobbyManager;

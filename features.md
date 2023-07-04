@@ -36,6 +36,8 @@ Sam:
 
 Caleb:
 * fix issue where multiple players can have the same color
+* Player dies if flies into an explosion
+* Player dies if flies directly through the path of a bullet or shrapnel
 
 
 
