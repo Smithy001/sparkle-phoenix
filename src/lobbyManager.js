@@ -45,6 +45,7 @@ class LobbyManager {
     }
 
     closeGame(gameId) {
+      console.log('Closing game: ' + gameId);
       delete(games[gameId]);
     }
 }

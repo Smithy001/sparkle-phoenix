@@ -70,7 +70,7 @@ var gameCode = lobbyManager.newGame(function(lobby){
 setTimeout(function(){
     var lobbyGame = lobbyManager.getGame(gameCode);
     console.log(lobbyGame);
-    lobbyManager.closeGame(lobbyGame);
+    lobbyManager.closeGame(gameCode);
     console.log(lobbyManager.getGames());
 }, 3000);
 
