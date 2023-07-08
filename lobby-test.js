@@ -67,7 +67,7 @@ var gameCode = lobbyManager.newGame(function(lobby){
 });
 
 
-setTimeout(function(){
+setTimeout(function() {
     var lobbyGame = lobbyManager.getGame(gameCode);
     console.log(lobbyGame);
     lobbyManager.closeGame(gameCode);

@@ -3,6 +3,7 @@ class Lobby {
       this.members = [];
       this.qrCode = '';
       this.lobby = false;
+      this.admin = null;
     }
   }
   

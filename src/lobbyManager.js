@@ -54,6 +54,19 @@ function setupHttpServer(lobbyManager, httpServer) {
   httpServer.express.get('/games', (req, res) => {
     res.json(lobbyManager.getGames());
   });
+
+  httpServer.express.get('/games/new', (req, res) => {
+    var gameId = lobbyManager.newGame();
+    var playerId = req.session.userId;
+    res.json({status: "Success", redirect: '/game/' + gameId });
+  });
+
+  httpServer.express.get('/game/:gameId', (req, res) => {
+    var thisGame = lobbyManager.getGame(req.params.gameId);
+    console.log(thisGame);
+    res.json(thisGame);
+  });
+  
 }
 
 function appendSlashIfMissing(str) {

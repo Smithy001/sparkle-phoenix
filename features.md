@@ -32,6 +32,9 @@ Sam:
 * Lobby manager
     * Game list backend
     * Lobby front-end
+    * Log-in players to get user id
+    * Game creater is admin and can start game
+    * Game lobby shows players who joined and connection status
 * Animate observers
 
 Caleb:
