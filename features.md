@@ -35,12 +35,24 @@ Sam:
     * Log-in players to get user id
     * Game creater is admin and can start game
     * Game lobby shows players who joined and connection status
-* Animate observers
+    * User-based identification
+
 
 Caleb:
 * fix issue where multiple players can have the same color
 * Player dies if flies into an explosion
 * Player dies if flies directly through the path of a bullet or shrapnel
+* Shrink map to speed up game
 
 
+MVP v2.1 features:
+Sam:
+* Game module system
+    * Game engine (back-end)
+    * Game interface (front-end)
+
+
+
+MVP v3.0 features:
+* Animate observers
 

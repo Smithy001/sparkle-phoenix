@@ -67,6 +67,11 @@ function setupHttpServer(lobbyManager, httpServer) {
     res.json(thisGame);
   });
   
+  httpServer.express.get('/game/:gameId/player', (req, res) => {
+    var thisGame = lobbyManager.getGame(req.params.gameId);
+    console.log(thisGame);
+    res.json(thisGame);
+  });
 }
 
 function appendSlashIfMissing(str) {
