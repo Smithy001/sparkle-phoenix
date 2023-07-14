@@ -15,6 +15,22 @@ $(document).ready(function() {
         window.location = `game/${selectedGame}/player`;
       }
     });
+
+    $('#create-game').click(function(){
+      $.ajax({
+        url: 'game/new',
+        method: 'POST',
+        dataType: 'json',
+        success: function(data) {
+          if (data && data.redirect) {
+            window.location = redirect;
+          }
+        },
+        error: function() {
+          console.log('Error occurred during the AJAX request');
+        }
+      });
+    });
 });
 
 function updateLobbies() {

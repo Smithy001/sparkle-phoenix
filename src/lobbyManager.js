@@ -1,4 +1,5 @@
 const lobbyGame = require('./lobbyGame');
+const path = require('path');
 
 var games = {};
 
@@ -55,7 +56,7 @@ function setupHttpServer(lobbyManager, httpServer) {
     res.json(lobbyManager.getGames());
   });
 
-  httpServer.express.get('/games/new', (req, res) => {
+  httpServer.express.post('/game/new', (req, res) => {
     var gameId = lobbyManager.newGame();
     var playerId = req.session.userId;
     res.json({status: "Success", redirect: '/game/' + gameId });
@@ -78,7 +79,7 @@ function setupHttpServer(lobbyManager, httpServer) {
     var thisGame = lobbyManager.getGame(gameId);
     console.log(thisGame);
     //res.json(thisGame);
-    res.sendFile(__dirname + '/public/player/index.html');
+    res.sendFile(path.resolve('public/player/index.html'));
   });
 }
 
