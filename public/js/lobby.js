@@ -1,6 +1,20 @@
 $(document).ready(function() {
     updateLobbies();
     setInterval(updateLobbies,15000);
+
+    if (isFragmentPresent('sim')) {
+      loadGames(['abc123','edf456','gth654']);
+    }
+
+    $('#join-game').click(function(){
+      var selectedGame = $('select option:selected').val();
+    
+      if (selectedGame == undefined) {
+        alert('Please select a game to join.');
+      } else {
+        window.location = `game/${selectedGame}/player`;
+      }
+    });
 });
 
 function updateLobbies() {

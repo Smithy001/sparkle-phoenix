@@ -68,9 +68,17 @@ function setupHttpServer(lobbyManager, httpServer) {
   });
   
   httpServer.express.get('/game/:gameId/player', (req, res) => {
-    var thisGame = lobbyManager.getGame(req.params.gameId);
+    var gameId = req.params.gameId;
+    if (gameId) {
+      gameId = gameId.toUpperCase();
+    } else {
+      res.json({status: "Failed", message: 'Game id not found.'}); 
+      return;
+    }
+    var thisGame = lobbyManager.getGame(gameId);
     console.log(thisGame);
-    res.json(thisGame);
+    //res.json(thisGame);
+    res.sendFile(__dirname + '/public/player/index.html');
   });
 }
 
