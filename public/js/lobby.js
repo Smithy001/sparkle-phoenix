@@ -16,6 +16,10 @@ $(document).ready(function() {
       }
     });
 
+    $('#refresh-games').click(function(){
+      updateLobbies();
+    });
+
     $('#create-game').click(function(){
       $.ajax({
         url: 'game/new',
@@ -23,7 +27,7 @@ $(document).ready(function() {
         dataType: 'json',
         success: function(data) {
           if (data && data.redirect) {
-            window.location = redirect;
+            window.location = data.redirect;
           }
         },
         error: function() {

@@ -57,7 +57,9 @@ function setupHttpServer(lobbyManager, httpServer) {
   });
 
   httpServer.express.post('/game/new', (req, res) => {
-    var gameId = lobbyManager.newGame();
+    var gameId = lobbyManager.newGame(function(data){
+      console.log(data);
+    });
     var playerId = req.session.userId;
     res.json({status: "Success", redirect: '/game/' + gameId });
   });
